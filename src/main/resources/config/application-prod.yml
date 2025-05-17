@@ -1,0 +1,70 @@
+logging:
+  level:
+    ROOT: INFO
+    at.abcdef.memmaster: INFO
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mariadb://localhost:3306/memmaster?useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: memmaster
+    password: memmemmem
+    hikari:
+      poolName: Hikari
+      auto-commit: true
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  jpa:
+     database: MYSQL
+     show-sql: false
+     properties:
+       hibernate.id.new_generator_mappings: true
+       hibernate.connection.provider_disables_autocommit: true
+       hibernate.cache.use_second_level_cache: true
+       hibernate.cache.use_query_cache: false
+       hibernate.generate_statistics: false
+       hibernate:
+         jdbc:
+           lob:
+             non_contextual_creation: true
+         dialect: org.hibernate.dialect.MySQLDialect
+  mail:
+    host: localhost
+    protocol: smtp
+  thymeleaf:
+    cache: true
+  devtools:
+    add-properties: false
+server:
+  port: 8383
+  shutdown: graceful # see https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-graceful-shutdown
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css, application/javascript, application/json
+    min-response-size: 1024
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: "https://mem.homesite.by,http://mem.abcdef.at/,https://mem.abcdef.at/"
+
+# App Properties
+application:
+  general:
+    baseUrl: 'https://mem.abcdef.at/'
+    crawler-schedulers: true
+  mail:
+    from: support-memmaster@homesite.by
+    baseUrl: 'https://mem.abcdef.at/'
+  upload:
+    local-path: '/var/www/memmaster/data/'
+    upload-dir: uploads
+  cors:
+    allowed-origins: 'https://mem.homesite.by/,http://mem.abcdef.at/,https://mem.abcdef.at/'
+  cache:
+    max-entries: 1000
+    time-to-live-seconds: 3600
+  security:
+    seed-key: 320bb523b651c669faaf027266d8bc33a98c46

@@ -1,0 +1,75 @@
+logging:
+  level:
+    ROOT: INFO
+    at:
+      abcdef:
+        memmaster: INFO
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-exclude: static/**
+    livereload:
+      enabled: false
+  jackson:
+    serialization:
+      indent-output: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mariadb://localhost:3306/memmaster?useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: memmaster
+    password: memmemmem
+    hikari:
+      poolName: Hikari
+      auto-commit: true
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+  jpa:
+    database: MYSQL
+    show-sql: true
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.connection.provider_disables_autocommit: true
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  mail:
+    host: localhost
+    port: '25'
+  thymeleaf:
+    cache: false
+server:
+  port: 8585
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: "http://localhost:4200"
+
+# App Properties
+application:
+  general:
+    baseUrl: 'http://localhost:8585/'
+    crawler-schedulers: true
+  mail:
+    from: support-memmaster@homesite.by
+    baseUrl: 'http://localhost:4200/'
+  upload:
+    local-path: '/mnt/c/work/java/memmaster/static/'
+    upload-dir: uploads
+    attach-dir: attachments
+  cors:
+    allowed-origins: 'http://localhost:8585,http://localhost:4200'
+  cache:
+    max-entries: 100
+    time-to-live-seconds: 3600
+  security:
+    seed-key: 320bb523b651c669faaf027266d8bc33a98c461e73ba9747f79166d21a9f16

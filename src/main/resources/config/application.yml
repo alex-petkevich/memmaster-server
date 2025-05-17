@@ -1,0 +1,75 @@
+logging:
+  level:
+    ROOT: INFO
+    at:
+      abcdef:
+        memmaster: INFO
+spring:
+  application:
+    name: memmaster-server
+  profiles:
+    active: dev
+    group:
+      dev: 'dev, api-docs'
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+  jmx:
+    enabled: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  datasource:
+    flyway:
+      locations: 'classpath:/db/migration'
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+  main:
+    allow-bean-definition-overriding: true
+  messages:
+    basename: i18n/messages
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    prefix: 'classpath:/templates/'
+    suffix: '.html'
+management:
+  endpoint:
+    health:
+      show-details: always
+    env:
+      show-values: ALWAYS
+    configprops:
+      show-values: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /api/management
+      discovery:
+        enabled: true
+      cors:
+        allowed-methods: "*"
+        allowed-headers: '*'
+        allow-credentials: true
+
+# App Properties
+application:
+  general:
+    jwtSecret: 320bb523b651c669faaf027266d8bc33a98c461e73ba9747f79166d21a9f16ae2d6f6af8d9dd155794d40528d2
+    jwtExpirationMs: 86400000
+    default_lang: en
+  cors:
+    allowed-methods: '*'
+    allowed-headers: '*'
+    exposed-headers: 'Link,X-Total-Count'
+    allow-credentials: true
+    max-age: '1800'
