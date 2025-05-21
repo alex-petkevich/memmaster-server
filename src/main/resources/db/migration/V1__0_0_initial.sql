@@ -61,9 +61,13 @@ create table dictionary
 CREATE TABLE folders
 (
     `id`        INT PRIMARY KEY AUTO_INCREMENT,
+    `parent_id`   INT NOT NULL,
     `user_id`   INT NOT NULL,
+    `uuid`      VARCHAR(255),
     `name`      VARCHAR(255),
     `icon`      VARCHAR(255),
+    `active`      BOOLEAN,
+    `public`      BOOLEAN,
     `created_at`  TIMESTAMP,
     `last_modified_at`  TIMESTAMP
 );

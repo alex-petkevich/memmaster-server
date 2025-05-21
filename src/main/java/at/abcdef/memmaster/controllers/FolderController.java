@@ -4,6 +4,7 @@ import at.abcdef.memmaster.config.ApplicationProperties;
 import at.abcdef.memmaster.controllers.dto.response.SettingsResponse;
 import at.abcdef.memmaster.controllers.mapper.SettingsMapper;
 import at.abcdef.memmaster.model.User;
+import at.abcdef.memmaster.service.FoldersService;
 import at.abcdef.memmaster.service.SettingsService;
 import at.abcdef.memmaster.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -20,35 +21,32 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/settings")
+@RequestMapping("/api/folders")
 @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-public class SettingsController
+public class FolderController
 {
 	final
 	UserService userService;
 
 	final
-	SettingsService settingsService;
+	FoldersService foldersService;
 
 	final
-	ApplicationProperties applicationProperties;
+	FolderMapper folderMapper;
 
-	final
-	SettingsMapper settingsMapper;
-
-	public SettingsController(UserService userService, SettingsService settingsService, ApplicationProperties applicationProperties, SettingsMapper settingsMapper) {
+	public FolderController(UserService userService, FoldersService foldersService, ApplicationProperties applicationProperties, FolderMapper folderMapper) {
 		this.userService = userService;
-		this.settingsService = settingsService;
+		this.foldersService = foldersService;
 		this.applicationProperties = applicationProperties;
-		this.settingsMapper = settingsMapper;
+		this.folderMapper = folderMapper;
 	}
 
 	@GetMapping("/")
 	@ResponseBody
-	public ResponseEntity<List<SettingsResponse>> getUserSettings()
+	public ResponseEntity<List<SettingsResponse>> getUserFolders()
 	{
 		User user = userService.getCurrentUser();
-		List<SettingsResponse> result = settingsService.getUserSettings(user.getId()).stream().map(settingsMapper::toEntity).toList();
+		List<SettingsResponse> result = foldersService.getUserFolders(user.getId()).stream().map(folderMapper::toEntity).toList();
 
 		return ResponseEntity.ok(result);
 	}

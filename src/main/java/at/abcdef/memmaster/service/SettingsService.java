@@ -2,7 +2,6 @@ package at.abcdef.memmaster.service;
 
 import static at.abcdef.memmaster.util.GlobUtil.settingValue;
 
-import at.abcdef.memmaster.config.ApplicationProperties;
 import at.abcdef.memmaster.model.Settings;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.SettingsRepository;
@@ -17,11 +16,8 @@ public class SettingsService
 {
 	private final SettingsRepository settingsRepository;
 
-	private final ApplicationProperties applicationProperties;
-
-	public SettingsService(SettingsRepository settingsRepository, ApplicationProperties applicationProperties) {
+	public SettingsService(SettingsRepository settingsRepository) {
 		this.settingsRepository = settingsRepository;
-		this.applicationProperties = applicationProperties;
 	}
 
 	public void saveSettings(User user, Map<String, String> values)
