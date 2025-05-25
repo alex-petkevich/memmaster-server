@@ -64,6 +64,7 @@ public class WebSecurityConfig
 						.requestMatchers("/api/account/**").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 						.requestMatchers("/api/info/**").permitAll()
+						.requestMatchers("/api/folders/**").permitAll()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 						.anyRequest().authenticated()
 				);

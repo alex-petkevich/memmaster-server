@@ -30,7 +30,6 @@ public class Folder
 	private Long parentId;
 
 
-	@Size(max = 33)
 	private String uuid;
 
 	@Size(max = 255)
