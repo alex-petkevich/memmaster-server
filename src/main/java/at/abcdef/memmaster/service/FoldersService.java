@@ -73,7 +73,16 @@ public class FoldersService
 			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "createdAt");
 		} else if (sort.contains("lastModifiedAt")) {
 			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "lastModifiedAt");
+		} else if (sort.contains("id")) {
+			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "id");
+		} else if (sort.contains("uuid")) {
+			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "uuid");
+		} else if (sort.contains("parentId")) {
+			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "parentId");
+		} else if (sort.contains("active")) {
+			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "active");
 		}
+		
 		if (sort.contains("asc")) {
 			sortOder = sortOder.ascending();
 		} else {
