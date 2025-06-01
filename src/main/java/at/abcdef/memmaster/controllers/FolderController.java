@@ -9,17 +9,13 @@ import at.abcdef.memmaster.service.FoldersService;
 import at.abcdef.memmaster.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/folders")
@@ -50,9 +46,22 @@ public class FolderController
 									   @RequestParam(defaultValue = "createdAt-desc") String sort)
 	{
 		User user = userService.getCurrentUser();
-		List<FolderDTO> result = foldersService.getUserFolders(user.getId(), name, uuid, parent_id, active, sort).stream().map(folderMapper::toEntity).toList();
+		List<FolderDTO> dbFolders = foldersService.getUserFolders(user.getId(), name, uuid, parent_id, active, sort).stream().map(folderMapper::toEntity).toList();
 
-		return ResponseEntity.ok(result);
+		List<FolderDTO> folders = new ArrayList<>();
+
+		for (FolderDTO folder : dbFolders) {
+			if (folder.getParent_id() == 0) {
+				dbFolders.forEach(f -> {
+					if (Objects.equals(f.getParent_id(), folder.getId())) {
+						folder.getChildren().add(f);
+					}
+				});
+				folders.add(folder);
+			}
+		}
+
+		return ResponseEntity.ok(folders);
 	}
 
 	@PostMapping("/")
@@ -67,22 +76,22 @@ public class FolderController
 			}
 		}
 
-		foldersService.saveFolder(user, folderMapper.toDto(folder));
+		Folder folderSaved = foldersService.saveFolder(user, folderMapper.toDto(folder));
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(folderSaved);
 	}
 
-	@PostMapping("/delete")
-	public ResponseEntity<?> delete(@Valid @RequestBody Folder folder)
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@Valid @PathVariable Long id)
 	{
 		User user = userService.getCurrentUser();
 
-		Folder existingFolder = foldersService.getUserFolder(user.getId(), folder.getId());
+		Folder existingFolder = foldersService.getUserFolder(user.getId(), id);
 		if (existingFolder == null) {
 			return ResponseEntity.status(403).body("You do not have permission to delete this folder.");
 		}
 
-		foldersService.deleteUserFolder(user.getId(), folder.getId());
+		foldersService.deleteUserFolder(user.getId(), id);
 
 		return ResponseEntity.ok().build();
 	}

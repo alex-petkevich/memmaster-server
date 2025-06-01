@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -89,9 +90,7 @@ public class FoldersService
 			sortOder = sortOder.descending();
 		}
 
-
 		return folderRepository.findAll(spec, sortOder);
-
 	}
 
 	public Folder getUserFolder(Integer userId, Long folderId) {

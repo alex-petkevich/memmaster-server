@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,4 +31,7 @@ public class FolderDTO {
     private OffsetDateTime created_at;
 
     private OffsetDateTime last_modified_at;
+
+    @Getter(lazy=true)
+    private final List<FolderDTO> children = new ArrayList<>();
 }

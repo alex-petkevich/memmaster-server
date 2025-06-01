@@ -13,8 +13,10 @@ public interface FolderMapper extends BasicMapper<Folder, FolderDTO>
 
     @Mapping(source = "user.id", target = "user_id")
     @Mapping(source = "isPublic", target = "is_public")
+    @Mapping(source = "parentId", target = "parent_id")
     FolderDTO toEntity(Folder folder);
 
     @Mapping(source = "is_public", target = "isPublic")
+    @Mapping(source = "parent_id", target = "parentId")
     Folder toDto(FolderDTO folderDTO);
 }
