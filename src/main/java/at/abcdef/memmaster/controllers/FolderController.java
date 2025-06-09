@@ -76,9 +76,9 @@ public class FolderController
 			}
 		}
 
-		Folder folderSaved = foldersService.saveFolder(user, folderMapper.toDto(folder));
+		foldersService.saveFolder(user, folderMapper.toDto(folder));
 
-		return ResponseEntity.ok(folderSaved);
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/{id}")
