@@ -1,7 +1,6 @@
 package at.abcdef.memmaster.controllers;
 
-import at.abcdef.memmaster.controllers.dto.response.FolderDTO;
-import at.abcdef.memmaster.controllers.dto.response.UserResponse;
+import at.abcdef.memmaster.controllers.dto.FolderDTO;
 import at.abcdef.memmaster.controllers.mapper.FolderMapper;
 import at.abcdef.memmaster.model.Folder;
 import at.abcdef.memmaster.model.User;

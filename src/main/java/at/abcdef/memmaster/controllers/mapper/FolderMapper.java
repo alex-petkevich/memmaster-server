@@ -1,6 +1,6 @@
 package at.abcdef.memmaster.controllers.mapper;
 
-import at.abcdef.memmaster.controllers.dto.response.FolderDTO;
+import at.abcdef.memmaster.controllers.dto.FolderDTO;
 import at.abcdef.memmaster.model.Folder;
 import at.abcdef.memmaster.util.BasicMapper;
 

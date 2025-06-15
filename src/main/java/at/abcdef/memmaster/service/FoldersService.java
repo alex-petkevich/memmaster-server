@@ -109,7 +109,7 @@ public class FoldersService
 
 	public Folder folderActivation(Long folderId) {
 		Folder folder = folderRepository.getReferenceById(folderId);
-		if (folder != null) {
+		if (folder.getId() != null) {
 			folder.setActive(!folder.getActive());
 			folder.setLastModifiedAt(OffsetDateTime.now());
 			return folderRepository.save(folder);
