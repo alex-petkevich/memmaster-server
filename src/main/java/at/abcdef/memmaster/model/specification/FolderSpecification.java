@@ -27,7 +27,7 @@ public class FolderSpecification
 	}
 	public static Specification<Folder> hasActive(Boolean active) {
 		return (root, query, criteriaBuilder) ->
-				criteriaBuilder.equal(root.get("active"), Boolean.TRUE.equals(active) ? 1 : 0);
+				criteriaBuilder.equal(root.get("active"), active);
 	}
 	public static Specification<Folder> isPublic(Boolean isPublic) {
 		return (root, query, criteriaBuilder) ->

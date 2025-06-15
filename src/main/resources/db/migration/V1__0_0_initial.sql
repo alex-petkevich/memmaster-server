@@ -65,6 +65,8 @@ CREATE TABLE folders
     `user_id`   INT NOT NULL,
     `uuid`      VARCHAR(255),
     `name`      VARCHAR(255),
+    `lng_src`   VARCHAR(20),
+    `lng_dest`  VARCHAR(20),
     `icon`      VARCHAR(255),
     `active`      BOOLEAN,
     `public`      BOOLEAN,
@@ -72,7 +74,7 @@ CREATE TABLE folders
     `last_modified_at`  TIMESTAMP
 );
 
-CREATE TABLE dictionary_roles
+CREATE TABLE dictionary_folders
 (
     folder_id INT NOT NULL,
     dictionary_id INT NOT NULL

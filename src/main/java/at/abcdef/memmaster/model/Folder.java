@@ -38,6 +38,12 @@ public class Folder
 	@Size(max = 150)
 	private String icon;
 	
+	@Size(max = 20)
+	private String lng_src;
+
+	@Size(max = 20)
+	private String lng_dest;
+
 	private Boolean active;
 
 	@Column(name="public")

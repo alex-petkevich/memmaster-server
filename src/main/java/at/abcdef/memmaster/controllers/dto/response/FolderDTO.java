@@ -22,6 +22,10 @@ public class FolderDTO {
 
     private String name;
 
+    private String lng_src;
+
+    private String lng_dest;
+
     private String icon;
 
     private Boolean active;
