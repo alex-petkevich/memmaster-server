@@ -23,15 +23,15 @@ public class DirectoryController {
    }
 
    @GetMapping("/{type}")
-   public ResponseEntity<?> get(@Valid @PathVariable String type)
+   public ResponseEntity<?> list(@Valid @PathVariable String type)
    {
       List<Directory> directory = directoryService.getDirectoriesByType(type);
 
       return ResponseEntity.ok(directoryMapper.toEntity(directory));
    }
 
-   @GetMapping("/{type}")
-   public ResponseEntity<?> get(@Valid @PathVariable String type, @RequestParam(required = false) String key)
+   @GetMapping("/{type}/{key}")
+   public ResponseEntity<?> get(@Valid @PathVariable String type, @PathVariable String key)
    {
       Directory directory = directoryService.getDirectoryByKeyAndType(type, key);
 
