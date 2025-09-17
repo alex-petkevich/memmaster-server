@@ -44,7 +44,7 @@ public class AccountController
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest)
+	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest)
 	{
 		JwtResponse response = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -52,7 +52,7 @@ public class AccountController
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequest signUpRequest)
+	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody UserRequest signUpRequest)
 	{
 		if (userService.isUsernameExists(signUpRequest.getUsername()))
 		{
@@ -93,7 +93,7 @@ public class AccountController
 	}
 
 	@PostMapping("/password-reset")
-	public ResponseEntity<?> passwordReset(@Valid @RequestBody LoginRequest loginRequest)
+	public ResponseEntity<MessageResponse> passwordReset(@Valid @RequestBody LoginRequest loginRequest)
 	{
 		MessageResponse response = userService.changePassword(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -101,7 +101,7 @@ public class AccountController
 	}
 
 	@PostMapping("/check-key")
-	public ResponseEntity<?> checkKey(@Valid @RequestBody ActivateRequest activateRequest)
+	public ResponseEntity<MessageResponse> checkKey(@Valid @RequestBody ActivateRequest activateRequest)
 	{
 		MessageResponse response = userService.checkResetKey(activateRequest.getKey());
 

@@ -22,9 +22,7 @@ public class SettingsService
 
 	public void saveSettings(User user, Map<String, String> values)
 	{
-		values.forEach((name, value) -> {
-			this.setSettingValue(user, name, value);
-		});
+		values.forEach((name, value) -> this.setSettingValue(user, name, value));
 
 	}
 

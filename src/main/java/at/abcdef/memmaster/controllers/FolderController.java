@@ -37,7 +37,6 @@ public class FolderController
 	}
 
 	@GetMapping("/")
-	@ResponseBody
 	public ResponseEntity<List<FolderDTO>> getUserFolders(@RequestParam(required = false) String name,
 										@RequestParam(required = false)  String uuid,
 										@RequestParam(required = false)  String parent_id,
@@ -64,7 +63,7 @@ public class FolderController
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> save(@Valid @RequestBody FolderDTO folder)
+	public ResponseEntity<String> save(@Valid @RequestBody FolderDTO folder)
 	{
 		User user = userService.getCurrentUser();
 
@@ -81,7 +80,7 @@ public class FolderController
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(@Valid @PathVariable Long id)
+	public ResponseEntity<String> delete(@Valid @PathVariable Long id)
 	{
 		User user = userService.getCurrentUser();
 
@@ -96,7 +95,7 @@ public class FolderController
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> get(@Valid @PathVariable Long id)
+	public ResponseEntity<FolderDTO> get(@Valid @PathVariable Long id)
 	{
 		User user = userService.getCurrentUser();
 		Folder folder = foldersService.getUserFolder(user.getId(), id);

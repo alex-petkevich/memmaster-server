@@ -44,7 +44,6 @@ public class SettingsController
 	}
 
 	@GetMapping("/")
-	@ResponseBody
 	public ResponseEntity<List<SettingsResponse>> getUserSettings()
 	{
 		User user = userService.getCurrentUser();
@@ -54,7 +53,7 @@ public class SettingsController
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<?> save(@Valid @RequestBody Map<String, String> userSettings)
+	public ResponseEntity<User> save(@Valid @RequestBody Map<String, String> userSettings)
 	{
 		User user = userService.getCurrentUser();
 		settingsService.saveSettings(user, userSettings);

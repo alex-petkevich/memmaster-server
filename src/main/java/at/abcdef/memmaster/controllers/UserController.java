@@ -54,7 +54,7 @@ public class UserController {
 
 	@PostMapping("/")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<?> saveUser(@Valid @RequestBody UserRequest userRequest) {
+	public ResponseEntity<MessageResponse> saveUser(@Valid @RequestBody UserRequest userRequest) {
 		User currentUserData = userService.getCurrentUser();
 
 		if (!userRequest.getUsername().equals(currentUserData.getUsername()))
@@ -85,7 +85,7 @@ public class UserController {
 	}
 
 	@PostMapping("/lang")
-	public ResponseEntity<?> saveUserLang(@RequestBody UserRequest userRequest) {
+	public ResponseEntity<MessageResponse> saveUserLang(@RequestBody UserRequest userRequest) {
 		User currentUserData = userService.getCurrentUser();
 
 		if (currentUserData == null) {

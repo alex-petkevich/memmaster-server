@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
@@ -27,12 +28,15 @@ import at.abcdef.memmaster.config.ApplicationProperties;
 @Service
 public class FilesystemFilesStorageServiceImpl implements FilesStorageService
 {
+    @Getter
+    FilesStorageService storageService;
+
 	private final ApplicationProperties applicationProperties;
 
 	public FilesystemFilesStorageServiceImpl(@Autowired ApplicationProperties applicationProperties)
 	{
 		this.applicationProperties = applicationProperties;
-	}
+    }
 
 	@Override
 	public void init()
@@ -116,7 +120,7 @@ public class FilesystemFilesStorageServiceImpl implements FilesStorageService
 			return Collections.emptyList();
 		}
 
-		return loadAllByUsername(authentication.getName());
+		return storageService.loadAllByUsername(authentication.getName());
 	}
 
 	@Override
@@ -129,7 +133,7 @@ public class FilesystemFilesStorageServiceImpl implements FilesStorageService
 		}
 		catch(NoSuchFileException e) {
 			init();
-			return this.loadAllByUsername(userId);
+			return storageService.loadAllByUsername(userId);
 		}
 		catch (IOException e)
 		{
@@ -149,4 +153,9 @@ public class FilesystemFilesStorageServiceImpl implements FilesStorageService
 	private String getUploadDir(String userId) {
 		return applicationProperties.getUpload().getLocalPath() + applicationProperties.getUpload().getUploadDir() + File.separator + userId + File.separator;
 	}
+
+    @Autowired
+    public void setStorageService(FilesStorageService storageService) {
+        this.storageService = storageService;
+    }
 }

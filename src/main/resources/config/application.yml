@@ -30,6 +30,7 @@ spring:
       ddl-auto: none
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   messages:
     basename: i18n/messages
   servlet:

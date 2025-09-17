@@ -63,7 +63,7 @@ application:
     from: support-memmaster@homesite.by
     baseUrl: 'http://localhost:4200/'
   upload:
-    local-path: '/mnt/c/work/java/memmaster/static/'
+    local-path: '/Volumes/ext/Users/alex/work/java/memmaster/static/'
     upload-dir: uploads
     attach-dir: attachments
   cors:

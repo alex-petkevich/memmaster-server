@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InfoController {
 
     @GetMapping("/")
-    public ResponseEntity<?> getApplicationInfo() {
+    public ResponseEntity<StringBuilder> getApplicationInfo() {
 
         StringBuilder result = new StringBuilder();
         result.append("Application: ").append(System.currentTimeMillis());

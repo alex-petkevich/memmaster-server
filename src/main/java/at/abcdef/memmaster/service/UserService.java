@@ -68,7 +68,7 @@ public class UserService
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
+				.toList();
 
 		return new JwtResponse(jwt,
 				userDetails.getId(),
