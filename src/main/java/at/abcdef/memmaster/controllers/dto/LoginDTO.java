@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.controllers.dto.request;
+package at.abcdef.memmaster.controllers.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoginRequest
+public class LoginDTO
 {
 	@NotBlank
 	private String username;

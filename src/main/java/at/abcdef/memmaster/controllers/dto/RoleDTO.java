@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.controllers.dto.response;
+package at.abcdef.memmaster.controllers.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class RoleResponse {
+public class RoleDTO {
     private Long id;
 
     private String name;

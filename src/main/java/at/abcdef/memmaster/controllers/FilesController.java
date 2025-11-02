@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import at.abcdef.memmaster.config.ApplicationProperties;
-import at.abcdef.memmaster.controllers.dto.response.MessageResponse;
+import at.abcdef.memmaster.controllers.dto.MessageResponseDTO;
 import at.abcdef.memmaster.model.FileInfo;
 import at.abcdef.memmaster.service.FilesStorageService;
 import at.abcdef.memmaster.service.TranslateService;
@@ -55,7 +55,7 @@ public class FilesController
 	}
 
 	@PostMapping("/upload")
-	public ResponseEntity<MessageResponse> uploadFile(@RequestParam("file") MultipartFile file)
+	public ResponseEntity<MessageResponseDTO> uploadFile(@RequestParam("file") MultipartFile file)
 	{
 		String message = "";
 		try
@@ -65,12 +65,12 @@ public class FilesController
 
 			storageService.save(file);
 			message = translate.get("files.save-successfully") + file.getOriginalFilename();
-			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
+			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDTO(message));
 		}
 		catch (Exception e)
 		{
 			message = translate.get("files.save-cant-upload") + file.getOriginalFilename() + "!";
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponseDTO(message));
 		}
 	}
 

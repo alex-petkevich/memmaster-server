@@ -1,7 +1,7 @@
 package at.abcdef.memmaster.controllers;
 
 import at.abcdef.memmaster.config.ApplicationProperties;
-import at.abcdef.memmaster.controllers.dto.response.SettingsResponse;
+import at.abcdef.memmaster.controllers.dto.SettingsDTO;
 import at.abcdef.memmaster.controllers.mapper.SettingsMapper;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.service.SettingsService;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -44,10 +43,10 @@ public class SettingsController
 	}
 
 	@GetMapping("/")
-	public ResponseEntity<List<SettingsResponse>> getUserSettings()
+	public ResponseEntity<List<SettingsDTO>> getUserSettings()
 	{
 		User user = userService.getCurrentUser();
-		List<SettingsResponse> result = settingsService.getUserSettings(user.getId()).stream().map(settingsMapper::toEntity).toList();
+		List<SettingsDTO> result = settingsService.getUserSettings(user.getId()).stream().map(settingsMapper::toEntity).toList();
 
 		return ResponseEntity.ok(result);
 	}

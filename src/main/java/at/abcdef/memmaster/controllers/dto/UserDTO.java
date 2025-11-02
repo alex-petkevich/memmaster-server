@@ -1,5 +1,7 @@
-package at.abcdef.memmaster.controllers.dto.request;
+package at.abcdef.memmaster.controllers.dto;
 
+import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import at.abcdef.memmaster.model.Role;
@@ -12,7 +14,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequest
+public class UserDTO
 {
 	private Long id;
 
@@ -34,7 +36,16 @@ public class UserRequest
 	@Size(max = 3)
 	private String lang;
 
-	private Set<Role> roles;
+    private String image;
 
-	private Boolean active;
+	private Set<Role> roles = new HashSet<>();
+
+	private Integer active;
+
+    private String activationKey;
+
+    private OffsetDateTime createdAt;
+
+    private OffsetDateTime lastModifiedAt;
+
 }

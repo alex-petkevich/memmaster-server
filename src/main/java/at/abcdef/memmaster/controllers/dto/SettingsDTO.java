@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.controllers.dto.response;
+package at.abcdef.memmaster.controllers.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SettingsResponse {
+public class SettingsDTO {
     private Long id;
 
     private Integer user_id;

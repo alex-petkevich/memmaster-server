@@ -1,7 +1,7 @@
 package at.abcdef.memmaster.controllers;
 
-import at.abcdef.memmaster.controllers.dto.request.UserRequest;
-import at.abcdef.memmaster.controllers.dto.response.RoleResponse;
+import at.abcdef.memmaster.controllers.dto.RoleDTO;
+import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.controllers.mapper.RoleMapper;
 import at.abcdef.memmaster.util.GlobUtil;
 import jakarta.validation.Valid;
@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import at.abcdef.memmaster.controllers.dto.response.MessageResponse;
-import at.abcdef.memmaster.controllers.dto.response.UserResponse;
+import at.abcdef.memmaster.controllers.dto.MessageResponseDTO;
+import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.controllers.mapper.UserMapper;
 import at.abcdef.memmaster.controllers.mapper.UserSignupRequestMapper;
 import at.abcdef.memmaster.model.User;
@@ -54,55 +54,55 @@ public class UserController {
 
 	@PostMapping("/")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<MessageResponse> saveUser(@Valid @RequestBody UserRequest userRequest) {
+	public ResponseEntity<MessageResponseDTO> saveUser(@Valid @RequestBody UserDTO userDTO) {
 		User currentUserData = userService.getCurrentUser();
 
-		if (!userRequest.getUsername().equals(currentUserData.getUsername()))
+		if (!userDTO.getUsername().equals(currentUserData.getUsername()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("user.error-not-supported")));
+					.body(new MessageResponseDTO(translate.get("user.error-not-supported")));
 		}
-		if (!userRequest.getEmail().equals(currentUserData.getEmail()) && userService.isEmailExists(userRequest.getEmail()))
+		if (!userDTO.getEmail().equals(currentUserData.getEmail()) && userService.isEmailExists(userDTO.getEmail()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("user.error-email-already-use")));
+					.body(new MessageResponseDTO(translate.get("user.error-email-already-use")));
 		}
 
-		userRequest.setUsername(currentUserData.getUsername());
-		userService.saveUser(currentUserData, userRequest, null);
+		userDTO.setUsername(currentUserData.getUsername());
+		userService.saveUser(currentUserData, userDTO, null);
 
-		return ResponseEntity.ok(new MessageResponse(translate.get("user.saved-successfully")));
+		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.saved-successfully")));
 	}
 
 	@GetMapping("/")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public UserResponse getUserInfo() {
+	public UserDTO getUserInfo() {
 		User user = userService.getCurrentUser();
 
 		return userMapper.toEntity(user);
 	}
 
 	@PostMapping("/lang")
-	public ResponseEntity<MessageResponse> saveUserLang(@RequestBody UserRequest userRequest) {
+	public ResponseEntity<MessageResponseDTO> saveUserLang(@RequestBody UserDTO userDTO) {
 		User currentUserData = userService.getCurrentUser();
 
 		if (currentUserData == null) {
 			return ResponseEntity.notFound().build();
 		}
 
-		UserRequest signupRequest = userSignupRequestMapper.toEntity(currentUserData);
-		signupRequest.setLang(userRequest.getLang());
+		UserDTO signupRequest = userSignupRequestMapper.toEntity(currentUserData);
+		signupRequest.setLang(userDTO.getLang());
 
 		userService.saveUser(currentUserData, signupRequest, null);
 
-		return ResponseEntity.ok(new MessageResponse(translate.get("user.lang-updated-successfully")));
+		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.lang-updated-successfully")));
 	}
 
 	@GetMapping("/admin/")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Page<UserResponse>> getUsers(@RequestParam(required = false) String name,
+	public ResponseEntity<Page<UserDTO>> getUsers(@RequestParam(required = false) String name,
 										@RequestParam(required = false)  String username,
 										@RequestParam(required = false)  String email,
 										@RequestParam (required = false) String role,
@@ -112,72 +112,72 @@ public class UserController {
 
 		Pageable paging = PageRequest.of(page, 20, GlobUtil.getSortOrder(sort));
 
-		Page<UserResponse> users = userService.getUsers(name, username, email, role, active, paging).map(userMapper::toEntity);
+		Page<UserDTO> users = userService.getUsers(name, username, email, role, active, paging).map(userMapper::toEntity);
 
 		return ResponseEntity.ok(users);
 	}
 
 	@PostMapping("/admin/activate/")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UserResponse> activateUser(@RequestBody Long userId) {
+	public ResponseEntity<UserDTO> activateUser(@RequestBody Long userId) {
 
-		UserResponse user = userMapper.toEntity(userService.adminUserActivation(userId));
+        UserDTO user = userMapper.toEntity(userService.adminUserActivation(userId));
 
 		return ResponseEntity.ok(user);
 	}
 
 	@GetMapping("/admin/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+	public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
 
-		UserResponse user = userMapper.toEntity(userService.getUser(id));
+        UserDTO user = userMapper.toEntity(userService.getUser(id));
 
 		return ResponseEntity.ok(user);
 	}
 
 	@GetMapping("/admin/roles/")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<RoleResponse>> getRoles() {
+	public ResponseEntity<List<RoleDTO>> getRoles() {
 
-		List<RoleResponse> roles = userService.getRoles().stream().map(roleMapper::toEntity).toList();
+		List<RoleDTO> roles = userService.getRoles().stream().map(roleMapper::toEntity).toList();
 
 		return ResponseEntity.ok(roles);
 	}
 
 	@PostMapping("/admin/")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<MessageResponse> saveUserAdmin(@Valid @RequestBody UserRequest userRequest) {
+	public ResponseEntity<MessageResponseDTO> saveUserAdmin(@Valid @RequestBody UserDTO userDTO) {
 		User userData;
-		if (userRequest.getId() != null) {
-			userData = userService.getUser(userRequest.getId());
+		if (userDTO.getId() != null) {
+			userData = userService.getUser(userDTO.getId());
 		} else {
 			userData = new User();
 			userData.setCreatedAt(OffsetDateTime.now());
 		}
 
-		if (!userRequest.getEmail().equals(userData.getEmail()) && userService.isEmailExists(userRequest.getEmail()))
+		if (!userDTO.getEmail().equals(userData.getEmail()) && userService.isEmailExists(userDTO.getEmail()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("user.error-email-already-use")));
+					.body(new MessageResponseDTO(translate.get("user.error-email-already-use")));
 		}
-		if (!userRequest.getUsername().equals(userData.getUsername()) && userService.isUsernameExists(userRequest.getUsername()))
+		if (!userDTO.getUsername().equals(userData.getUsername()) && userService.isUsernameExists(userDTO.getUsername()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("user.error-username-already-use")));
+					.body(new MessageResponseDTO(translate.get("user.error-username-already-use")));
 		}
 
-		userService.saveUser(userData, userRequest, userRequest.getRoles());
+		userService.saveUser(userData, userDTO, userDTO.getRoles());
 
-		return ResponseEntity.ok(new MessageResponse(translate.get("user.saved-successfully")));
+		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.saved-successfully")));
 	}
 
 	@DeleteMapping("/admin/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<MessageResponse> deleteUserAdmin(@PathVariable Long id) {
+	public ResponseEntity<MessageResponseDTO> deleteUserAdmin(@PathVariable Long id) {
 		this.userService.deleteUser(id);
 
-		return ResponseEntity.ok(new MessageResponse(translate.get("user.deleted-successfully")));
+		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.deleted-successfully")));
 	}
 }

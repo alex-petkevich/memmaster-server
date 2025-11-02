@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.controllers.dto.request;
+package at.abcdef.memmaster.controllers.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ActivateRequest
+public class ActivateUserDTO
 {
 	@NotBlank
 	private String key;

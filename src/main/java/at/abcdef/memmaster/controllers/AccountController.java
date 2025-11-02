@@ -3,7 +3,8 @@ package at.abcdef.memmaster.controllers;
 import java.util.HashSet;
 import java.util.Set;
 
-import at.abcdef.memmaster.controllers.dto.request.UserRequest;
+import at.abcdef.memmaster.controllers.dto.*;
+import at.abcdef.memmaster.controllers.dto.UserDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import at.abcdef.memmaster.controllers.dto.request.ActivateRequest;
-import at.abcdef.memmaster.controllers.dto.request.LoginRequest;
-import at.abcdef.memmaster.controllers.dto.response.JwtResponse;
-import at.abcdef.memmaster.controllers.dto.response.MessageResponse;
 import at.abcdef.memmaster.model.ERole;
 import at.abcdef.memmaster.model.Role;
 import at.abcdef.memmaster.repository.RoleRepository;
@@ -44,27 +41,27 @@ public class AccountController
 	}
 
 	@PostMapping("/signin")
-	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest)
+	public ResponseEntity<JwtDTO> authenticateUser(@Valid @RequestBody LoginDTO loginRequest)
 	{
-		JwtResponse response = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
+		JwtDTO response = userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody UserRequest signUpRequest)
+	public ResponseEntity<MessageResponseDTO> registerUser(@Valid @RequestBody UserDTO signUpRequest)
 	{
 		if (userService.isUsernameExists(signUpRequest.getUsername()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("account.register-user.username-exists")));
+					.body(new MessageResponseDTO(translate.get("account.register-user.username-exists")));
 		}
 		if (userService.isEmailExists(signUpRequest.getEmail()))
 		{
 			return ResponseEntity
 					.badRequest()
-					.body(new MessageResponse(translate.get("account.register-user.email-exists")));
+					.body(new MessageResponseDTO(translate.get("account.register-user.email-exists")));
 		}
 		
 		// Create new user's account
@@ -73,37 +70,37 @@ public class AccountController
 
 		userService.createUser(signUpRequest, roles);
 		
-		return ResponseEntity.ok(new MessageResponse(translate.get("account.register-user.user-registered")));
+		return ResponseEntity.ok(new MessageResponseDTO(translate.get("account.register-user.user-registered")));
 	}
 
 	@PostMapping("/activate")
-	public ResponseEntity<JwtResponse> activateUser(@Valid @RequestBody ActivateRequest activateRequest)
+	public ResponseEntity<JwtDTO> activateUser(@Valid @RequestBody ActivateUserDTO activateUserDTO)
 	{
-		JwtResponse response = userService.activate(activateRequest.getKey());
+		JwtDTO response = userService.activate(activateUserDTO.getKey());
 
 		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/forgot-password/{key}")
-	public ResponseEntity<MessageResponse> forgotPassword(@Valid @PathVariable String key)
+	public ResponseEntity<MessageResponseDTO> forgotPassword(@Valid @PathVariable String key)
 	{
-		MessageResponse response = userService.forgotPasswordSend(key);
+		MessageResponseDTO response = userService.forgotPasswordSend(key);
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/password-reset")
-	public ResponseEntity<MessageResponse> passwordReset(@Valid @RequestBody LoginRequest loginRequest)
+	public ResponseEntity<MessageResponseDTO> passwordReset(@Valid @RequestBody LoginDTO loginRequest)
 	{
-		MessageResponse response = userService.changePassword(loginRequest.getUsername(), loginRequest.getPassword());
+		MessageResponseDTO response = userService.changePassword(loginRequest.getUsername(), loginRequest.getPassword());
 
 		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/check-key")
-	public ResponseEntity<MessageResponse> checkKey(@Valid @RequestBody ActivateRequest activateRequest)
+	public ResponseEntity<MessageResponseDTO> checkKey(@Valid @RequestBody ActivateUserDTO activateUserDTO)
 	{
-		MessageResponse response = userService.checkResetKey(activateRequest.getKey());
+		MessageResponseDTO response = userService.checkResetKey(activateUserDTO.getKey());
 
 		return ResponseEntity.ok(response);
 	}

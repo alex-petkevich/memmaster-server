@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import at.abcdef.memmaster.controllers.dto.request.UserRequest;
+import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.model.specification.UserSpecification;
 import at.abcdef.memmaster.repository.RoleRepository;
 import org.springframework.data.domain.Page;
@@ -24,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import at.abcdef.memmaster.config.ApplicationProperties;
-import at.abcdef.memmaster.controllers.dto.response.JwtResponse;
-import at.abcdef.memmaster.controllers.dto.response.MessageResponse;
+import at.abcdef.memmaster.controllers.dto.JwtDTO;
+import at.abcdef.memmaster.controllers.dto.MessageResponseDTO;
 import at.abcdef.memmaster.model.Role;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.UserRepository;
@@ -58,7 +57,7 @@ public class UserService
 		this.applicationProperties = applicationProperties;
 	}
 
-	public JwtResponse authenticate(String username, String password)
+	public JwtDTO authenticate(String username, String password)
 	{
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(username, password));
@@ -70,7 +69,7 @@ public class UserService
 				.map(GrantedAuthority::getAuthority)
 				.toList();
 
-		return new JwtResponse(jwt,
+		return new JwtDTO(jwt,
 				userDetails.getId(),
 				userDetails.getUsername(),
 				userDetails.getEmail(),
@@ -88,7 +87,7 @@ public class UserService
 		return userRepository.existsByEmail(email);
 	}
 
-	public void createUser(UserRequest signUpRequest, Set<Role> roles)
+	public void createUser(UserDTO signUpRequest, Set<Role> roles)
 	{
 		User user = new User();
 		user.setUsername(signUpRequest.getUsername());
@@ -109,7 +108,7 @@ public class UserService
 		sendMailService.sendActivationEmail(user);
 	}
 
-	public void saveUser(User currentUserData, UserRequest signUpRequest, Set<Role> roles)
+	public void saveUser(User currentUserData, UserDTO signUpRequest, Set<Role> roles)
 	{
 		currentUserData.setUsername(signUpRequest.getUsername());
 		currentUserData.setEmail(signUpRequest.getEmail());
@@ -133,7 +132,7 @@ public class UserService
 		return UUID.randomUUID().toString();
 	}
 
-	public JwtResponse activate(String key)
+	public JwtDTO activate(String key)
 	{
 		User user = userRepository.findByActivationKey(key).orElse(null);
 		if (user != null) {
@@ -144,13 +143,13 @@ public class UserService
 
 			this.forgotPasswordSend(user.getEmail());
 
-			return new JwtResponse(null, user.getId(), user.getUsername(), user.getEmail(), user.getLang(), null);
+			return new JwtDTO(null, user.getId(), user.getUsername(), user.getEmail(), user.getLang(), null);
 		}
 		
-		return new JwtResponse(null, null, null, null, null, null);
+		return new JwtDTO(null, null, null, null, null, null);
 	}
 
-	public MessageResponse forgotPasswordSend(String key)
+	public MessageResponseDTO forgotPasswordSend(String key)
 	{
 		User user = userRepository.findForResetPassword(key).orElse(null);
 		if (user != null) {
@@ -159,22 +158,22 @@ public class UserService
 			userRepository.save(user);
 
 			sendMailService.sendPasswordResetMail(user);
-			return new MessageResponse(SUCCESSFUL);
+			return new MessageResponseDTO(SUCCESSFUL);
 		}
 
-		return new MessageResponse("");
+		return new MessageResponseDTO("");
 	}
 
-	public MessageResponse checkResetKey(String key)
+	public MessageResponseDTO checkResetKey(String key)
 	{
 		User user = userRepository.findByActivationKey(key).orElse(null);
 		if (user != null && user.getActive() == 1) {
-			return new MessageResponse(SUCCESSFUL);
+			return new MessageResponseDTO(SUCCESSFUL);
 		}
-		return new MessageResponse("");
+		return new MessageResponseDTO("");
 	}
 
-	public MessageResponse changePassword(String username, String password)
+	public MessageResponseDTO changePassword(String username, String password)
 	{
 		User user = userRepository.findByActivationKey(username).orElse(null);
 		if (user != null) {
@@ -183,10 +182,10 @@ public class UserService
 			user.setLastModifiedAt(OffsetDateTime.now());
 			userRepository.save(user);
 			
-			return new MessageResponse(SUCCESSFUL);
+			return new MessageResponseDTO(SUCCESSFUL);
 		}
 		
-		return new MessageResponse("");
+		return new MessageResponseDTO("");
 	}
 
 	public User getCurrentUser()
