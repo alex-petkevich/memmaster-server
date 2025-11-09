@@ -101,6 +101,14 @@ public class FoldersService
 		return folder;
 	}
 
+  public Folder getUserOrPublicFolder(Integer userId, Long folderId) {
+    Folder folder = folderRepository.getReferenceById(folderId);
+    if (!Objects.equals(folder.getUser().getId(), userId) && !folder.getIsPublic()) {
+      return null;
+    }
+    return folder;
+  }
+
 	public void deleteUserFolder(Integer userId, Long folderId) {
 		if (folderId != null) {
 			folderRepository.deleteById(folderId);

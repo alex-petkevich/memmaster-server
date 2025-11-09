@@ -115,7 +115,7 @@ public class UserService
 		currentUserData.setFirstname(signUpRequest.getFirstname());
 		currentUserData.setLastname(signUpRequest.getLastname());
 		currentUserData.setLastModifiedAt(OffsetDateTime.now());
-		currentUserData.setActive(Boolean.TRUE.equals(signUpRequest.getActive()) ? 1 : 0);
+		currentUserData.setActive(signUpRequest.getActive());
 		if (StringUtils.hasText(signUpRequest.getLang()))
 		{
 			currentUserData.setLang(signUpRequest.getLang());
