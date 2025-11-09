@@ -7,6 +7,7 @@ import at.abcdef.memmaster.repository.DictionaryRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class DictionaryService {
   private DictionaryRepository dictionaryRepository;
   private UserService userService;
 
-  public DictionaryService(DictionaryRepository dictionaryRepository) {
+  public DictionaryService(DictionaryRepository dictionaryRepository, UserService userService) {
     this.dictionaryRepository = dictionaryRepository;
+    this.userService = userService;
   }
 
   public List<Dictionary> getDictionaryInFolder(@Valid Folder folder) {
@@ -26,6 +28,9 @@ public class DictionaryService {
 
   public List<Dictionary> saveDictionaryInFolder(Folder folder, List<Dictionary> dto) {
     for (Dictionary d : dto) {
+      if (d.getFolders() == null) {
+        d.setFolders(new ArrayList<>());
+      }
       if (!d.getFolders().contains(folder)) {
         d.getFolders().add(folder);
       }
