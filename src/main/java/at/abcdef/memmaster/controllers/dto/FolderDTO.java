@@ -38,4 +38,6 @@ public class FolderDTO {
 
     @Getter(lazy=true)
     private final List<FolderDTO> children = new ArrayList<>();
+
+    private Integer dictionary_count;
 }

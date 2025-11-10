@@ -32,8 +32,10 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionaryPairDTO.setId(dictionary.getId());
         dictionaryPairDTO.setName(dictionary.getName());
         dictionaryPairDTO.setValue(dictionary.getValue());
+/*
         dictionaryPairDTO.setName_file(dictionary.getNameImg());
         dictionaryPairDTO.setValue_file(dictionary.getValueImg());
+*/
         dictionaryPairDTO.setName_type(StringUtils.hasText(dictionary.getName()) ? DictionaryPairDTO.PairType.TEXT : DictionaryPairDTO.PairType.FILE );
         dictionaryPairDTO.setValue_type(StringUtils.hasText(dictionary.getValue()) ? DictionaryPairDTO.PairType.TEXT : DictionaryPairDTO.PairType.FILE );
         return dictionaryPairDTO;
@@ -62,8 +64,10 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionary.setId(dictionaryPairDTO.getId());
         dictionary.setName(dictionaryPairDTO.getName());
         dictionary.setValue(dictionaryPairDTO.getValue());
+/*
         dictionary.setNameImg(dictionaryPairDTO.getName_file());
         dictionary.setValueImg(dictionaryPairDTO.getValue_file());
+*/
         return dictionary;
     }
 

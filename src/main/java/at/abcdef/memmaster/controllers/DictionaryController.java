@@ -1,6 +1,7 @@
 package at.abcdef.memmaster.controllers;
 
 import at.abcdef.memmaster.controllers.dto.DictionaryDTO;
+import at.abcdef.memmaster.controllers.dto.DictionaryPairDTO;
 import at.abcdef.memmaster.controllers.mapper.DictionaryMapper;
 import at.abcdef.memmaster.model.Dictionary;
 import at.abcdef.memmaster.model.Folder;
@@ -47,7 +48,7 @@ public class DictionaryController {
   }
 
   @PostMapping("/{folderId}")
-  public ResponseEntity<?> save(@Valid @PathVariable Long folderId, @RequestBody List<DictionaryDTO> dictionaryPairs) {
+  public ResponseEntity<?> save(@Valid @PathVariable Long folderId, @RequestBody List<DictionaryPairDTO> dictionaryPairs) {
     User user = userService.getCurrentUser();
 
     Folder existingFolder = foldersService.getUserFolder(user.getId(), folderId);
@@ -55,7 +56,7 @@ public class DictionaryController {
       return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
     }
 
-    List<Dictionary> dictionary = dictionaryService.saveDictionaryInFolder(existingFolder, dictionaryMapper.toDto(dictionaryPairs));
+    List<Dictionary> dictionary = dictionaryService.saveDictionaryInFolder(existingFolder, dictionaryMapper.fromPairDto(dictionaryPairs));
 
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(dictionary));
   }
