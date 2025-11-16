@@ -52,9 +52,11 @@ public class FolderController
 			if (folder.getParent_id() == 0) {
 				dbFolders.forEach(f -> {
 					if (Objects.equals(f.getParent_id(), folder.getId())) {
+            f.setDictionary_count(foldersService.getFolderDictionarySize(f.getId()));
 						folder.getChildren().add(f);
 					}
 				});
+        folder.setDictionary_count(foldersService.getFolderDictionarySize(folder.getId()));
 				folders.add(folder);
 			}
 		}

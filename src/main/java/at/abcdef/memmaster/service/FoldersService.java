@@ -45,55 +45,65 @@ public class FoldersService
 
 	public List<Folder> getUserFolders(Integer userId , String name, String uuid, String parentId, Boolean active, String sort)
 	{
-		Specification<Folder> spec = Specification.where(null);
+    Specification<Folder> spec = getFolderSearchSpecification(name, uuid, parentId, active);
 
-		if (name != null && !name.isEmpty()) {
-			spec = spec.and(FolderSpecification.hasName(name.toLowerCase()));
-		}
-		if (uuid != null && !uuid.isEmpty()) {
-			spec = spec.and(FolderSpecification.hasUuid(uuid.toLowerCase()));
-		}
-		if (parentId != null && !parentId.isEmpty()) {
-			spec = spec.and(FolderSpecification.hasParentId(Long.valueOf(parentId)));
-		}
-		if (Boolean.TRUE.equals(active)) {
-			spec = spec.and(FolderSpecification.hasActive(active));
-		}
-				
-		if (sort == null || sort.isEmpty()) {
+    Sort sortOder = getFolderSearchOrders(sort);
+
+    return folderRepository.findAll(spec, sortOder);
+	}
+
+  private static Sort getFolderSearchOrders(String sort) {
+    if (sort == null || sort.isEmpty()) {
 			sort = "createdAt-desc"; // Default sort order
 		}
 
-		Sort sortOder = Sort.by(Sort.Direction.DESC, "createdAt");
-		if (StringUtils.hasText(sort) && !sort.contains("-")) {
-			sort = sort + "-asc"; 
-		}
-		if (sort.contains("name")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "name");
-		} else if (sort.contains("createdAt")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "createdAt");
-		} else if (sort.contains("lastModifiedAt")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "lastModifiedAt");
-		} else if (sort.contains("id")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "id");
-		} else if (sort.contains("uuid")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "uuid");
-		} else if (sort.contains("parentId")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "parentId");
-		} else if (sort.contains("active")) {
-			sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "active");
-		}
-		
-		if (sort.contains("asc")) {
-			sortOder = sortOder.ascending();
-		} else {
-			sortOder = sortOder.descending();
-		}
+    Sort sortOder = Sort.by(Sort.Direction.DESC, "createdAt");
+    if (StringUtils.hasText(sort) && !sort.contains("-")) {
+      sort = sort + "-asc";
+    }
+    if (sort.contains("name")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "name");
+    } else if (sort.contains("createdAt")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "createdAt");
+    } else if (sort.contains("lastModifiedAt")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "lastModifiedAt");
+    } else if (sort.contains("id")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "id");
+    } else if (sort.contains("uuid")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "uuid");
+    } else if (sort.contains("parentId")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "parentId");
+    } else if (sort.contains("active")) {
+      sortOder = Sort.by(Sort.Direction.fromString(sort.split("-")[1]), "active");
+    }
 
-		return folderRepository.findAll(spec, sortOder);
-	}
+    if (sort.contains("asc")) {
+      sortOder = sortOder.ascending();
+    } else {
+      sortOder = sortOder.descending();
+    }
+    return sortOder;
+  }
 
-	public Folder getUserFolder(Integer userId, Long folderId) {
+  private static Specification<Folder> getFolderSearchSpecification(String name, String uuid, String parentId, Boolean active) {
+    Specification<Folder> spec = (root, query, builder) -> null;
+
+    if (name != null && !name.isEmpty()) {
+      spec = spec.and(FolderSpecification.hasName(name.toLowerCase()));
+    }
+    if (uuid != null && !uuid.isEmpty()) {
+      spec = spec.and(FolderSpecification.hasUuid(uuid.toLowerCase()));
+    }
+    if (parentId != null && !parentId.isEmpty()) {
+      spec = spec.and(FolderSpecification.hasParentId(Long.valueOf(parentId)));
+    }
+    if (Boolean.TRUE.equals(active)) {
+      spec = spec.and(FolderSpecification.hasActive(active));
+    }
+    return spec;
+  }
+
+  public Folder getUserFolder(Integer userId, Long folderId) {
 		Folder folder = folderRepository.getReferenceById(folderId);
 		if (!Objects.equals(folder.getUser().getId(), userId)) {
 			return null; 
@@ -125,4 +135,7 @@ public class FoldersService
 		return null;
 	}
 
+  public long getFolderDictionarySize(Long id) {
+    return folderRepository.countByFolderIdInJoin(id);
+  }
 }
