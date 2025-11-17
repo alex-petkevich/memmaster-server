@@ -37,7 +37,7 @@ insert into user_roles values (1, 1);
 CREATE TABLE settings
 (
     `id`        INT PRIMARY KEY AUTO_INCREMENT,
-    `user_id`   INT NOT NULL,
+    `user_id`   INT,
     `name`      VARCHAR(255),
     `value`     TEXT,
     `created_at`  TIMESTAMP,

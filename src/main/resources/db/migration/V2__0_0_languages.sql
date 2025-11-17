@@ -6,41 +6,33 @@ CREATE TABLE IF NOT EXISTS `directory`
 	`value` VARCHAR(255)
 );
 
-create index `key`
+create index IF NOT EXISTS `key`
     on directory (`key`);
 
-insert into directory (`key`, value) values ('AR','Arabic');
-insert into directory (`key`, value) values ('BG','Bulgarian');
-insert into directory (`key`, value) values ('CS','Czech');
-insert into directory (`key`, value) values ('DA','Danish');
-insert into directory (`key`, value) values ('DE','German');
-insert into directory (`key`, value) values ('EL','Greek');
-insert into directory (`key`, value) values ('EN','English (all English variants)');
-insert into directory (`key`, value) values ('ES','Spanish');
-insert into directory (`key`, value) values ('ET','Estonian');
-insert into directory (`key`, value) values ('FI','Finnish');
-insert into directory (`key`, value) values ('FR','French');
-insert into directory (`key`, value) values ('HE','Hebrew');
-insert into directory (`key`, value) values ('HU','Hungarian');
-insert into directory (`key`, value) values ('ID','Indonesian');
-insert into directory (`key`, value) values ('IT','Italian');
-insert into directory (`key`, value) values ('JA','Japanese');
-insert into directory (`key`, value) values ('KO','Korean');
-insert into directory (`key`, value) values ('LT','Lithuanian');
-insert into directory (`key`, value) values ('LV','Latvian');
-insert into directory (`key`, value) values ('NB','Norwegian Bokmål');
-insert into directory (`key`, value) values ('NL','Dutch');
-insert into directory (`key`, value) values ('PL','Polish');
-insert into directory (`key`, value) values ('PT','Portuguese (all Portuguese variants)');
-insert into directory (`key`, value) values ('RO','Romanian');
-insert into directory (`key`, value) values ('RU','Russian');
-insert into directory (`key`, value) values ('SK','Slovak');
-insert into directory (`key`, value) values ('SL','Slovenian');
-insert into directory (`key`, value) values ('SV','Swedish');
-insert into directory (`key`, value) values ('TH','Thai');
-insert into directory (`key`, value) values ('TR','Turkish');
-insert into directory (`key`, value) values ('UK','Ukrainian');
-insert into directory (`key`, value) values ('VI','Vietvaluese');
-insert into directory (`key`, value) values ('ZH','Chinese (all Chinese variants)');
+insert into directory (`key`, value) values ('be','Belarussian');
+insert into directory (`key`, value) values ('bg','Bulgarian');
+insert into directory (`key`, value) values ('cs','Czech');
+insert into directory (`key`, value) values ('da','Danish');
+insert into directory (`key`, value) values ('de','German');
+insert into directory (`key`, value) values ('el','Greek');
+insert into directory (`key`, value) values ('en','English');
+insert into directory (`key`, value) values ('es','Spanish');
+insert into directory (`key`, value) values ('et','Estonian');
+insert into directory (`key`, value) values ('fi','Finnish');
+insert into directory (`key`, value) values ('fr','French');
+insert into directory (`key`, value) values ('hu','Hungarian');
+insert into directory (`key`, value) values ('it','Italian');
+insert into directory (`key`, value) values ('lt','Lithuanian');
+insert into directory (`key`, value) values ('lt','Latvian');
+insert into directory (`key`, value) values ('no','Norwegian');
+insert into directory (`key`, value) values ('nl','Dutch');
+insert into directory (`key`, value) values ('pl','Polish');
+insert into directory (`key`, value) values ('pt','Portuguese');
+insert into directory (`key`, value) values ('ru','Russian');
+insert into directory (`key`, value) values ('sk','Slovak');
+insert into directory (`key`, value) values ('sv','Swedish');
+insert into directory (`key`, value) values ('tr','Turkish');
+insert into directory (`key`, value) values ('uk','Ukrainian');
+insert into directory (`key`, value) values ('zh','Chinese');
 
 update directory set type = 'language';

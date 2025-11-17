@@ -20,7 +20,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/settings")
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class SettingsController
 {
 	final
@@ -43,6 +42,7 @@ public class SettingsController
 	}
 
 	@GetMapping("/")
+  @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<List<SettingsDTO>> getUserSettings()
 	{
 		User user = userService.getCurrentUser();
@@ -52,6 +52,7 @@ public class SettingsController
 	}
 
 	@PostMapping("/")
+  @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<User> save(@Valid @RequestBody Map<String, String> userSettings)
 	{
 		User user = userService.getCurrentUser();
@@ -59,5 +60,22 @@ public class SettingsController
 
 		return ResponseEntity.ok().build();
 	}
+
+  @GetMapping("/global/")
+  public ResponseEntity<List<SettingsDTO>> getGlobalSettings()
+  {
+    List<SettingsDTO> result = settingsService.getGlobalSettings().stream().map(settingsMapper::toEntity).toList();
+
+    return ResponseEntity.ok(result);
+  }
+
+  @PostMapping("/global/")
+  @PreAuthorize("hasAnyRole('ADMIN')")
+  public ResponseEntity<User> saveGlobalSettings(@Valid @RequestBody Map<String, String> globalSettings)
+  {
+    settingsService.saveSettings(null, globalSettings);
+
+    return ResponseEntity.ok().build();
+  }
 
 }

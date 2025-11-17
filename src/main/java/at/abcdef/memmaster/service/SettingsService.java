@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class SettingsService
@@ -27,7 +28,8 @@ public class SettingsService
 	}
 
 	public Settings setSettingValue(User user, String name, String value) {
-		Settings currentSetting = settingsRepository.getByUserIdAndName(user.getId(), name);
+    Integer userId = user != null ? user.getId() : null;
+    Settings currentSetting = settingsRepository.getByUserIdAndName(userId, name);
 		if (currentSetting == null) {
 			currentSetting = new Settings();
 			currentSetting.setName(name);
@@ -45,15 +47,18 @@ public class SettingsService
 		return settingsRepository.getByUserId(userId);
 	}
 
-	public List<User> getMailSettingsByUsers() {
-		List<User> users = settingsRepository.getUserWithEmailSettings();
+	public List<Settings> getGlobalSettings()
+	{
 
-		return users.stream().filter(it -> {
-			String lastTimeProcessed = settingValue(it, "lasttime_mail_processed");
-			String period = settingValue(it, "period");
-			return "".equals(lastTimeProcessed) 
-                    || null == lastTimeProcessed
-					|| OffsetDateTime.now().toEpochSecond() > Long.parseLong(lastTimeProcessed) + Long.parseLong(period) * 60;
-		}).toList();
+		return settingsRepository.findAllByUserIdIsNull();
 	}
+
+	public String getSettingValue(String name)
+  {
+    List<Settings> settings = getGlobalSettings();
+    Optional<Settings> setting = settings.stream().filter(s -> s.getName().equals(name)).findFirst();
+    return setting.isPresent() ? setting.get().getValue() : "";
+  }
+
+
 }
