@@ -1,5 +1,8 @@
 package at.abcdef.memmaster.service;
 
+import at.abcdef.memmaster.model.yandex.YDictionary;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -28,8 +31,14 @@ public class TranslatorService {
         .retrieve()
         .body(String.class);
 
+    final ObjectMapper mapper = new ObjectMapper();
+    YDictionary dictionary;
+    try {
+      dictionary = mapper.readValue(result, YDictionary.class);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
 
-
-    return result;
+    return dictionary != null ? String.valueOf(dictionary.getCode()) : "";
   }
 }
