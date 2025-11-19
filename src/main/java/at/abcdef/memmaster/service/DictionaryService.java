@@ -4,6 +4,7 @@ import at.abcdef.memmaster.model.Dictionary;
 import at.abcdef.memmaster.model.Folder;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.DictionaryRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Transactional
 public class DictionaryService {
 
-  private DictionaryRepository dictionaryRepository;
-  private UserService userService;
+  private final DictionaryRepository dictionaryRepository;
+  private final UserService userService;
 
   public DictionaryService(DictionaryRepository dictionaryRepository, UserService userService) {
     this.dictionaryRepository = dictionaryRepository;
@@ -27,6 +29,12 @@ public class DictionaryService {
   }
 
   public List<Dictionary> saveDictionaryInFolder(Folder folder, List<Dictionary> dto) {
+
+    List<Dictionary> existingRecords = dto.stream().filter(d -> d.getId() != null).toList();
+    List<Long> existingIds = existingRecords.stream().map(Dictionary::getId).toList();
+
+    dictionaryRepository.deleteAllByFoldersContainingAndIdNotIn(folder, existingIds);
+
     for (Dictionary d : dto) {
       if (d.getFolders() == null) {
         d.setFolders(new ArrayList<>());

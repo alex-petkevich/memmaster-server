@@ -5,6 +5,7 @@ import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.model.specification.FolderSpecification;
 import at.abcdef.memmaster.repository.FolderRepository;
 
+import jakarta.transaction.Transactional;
 import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class FoldersService
 {
 	private final FolderRepository folderRepository;
@@ -104,7 +106,7 @@ public class FoldersService
   }
 
   public Folder getUserFolder(Integer userId, Long folderId) {
-		Folder folder = folderRepository.getReferenceById(folderId);
+		Folder folder = folderRepository.getById(folderId);
 		if (!Objects.equals(folder.getUser().getId(), userId)) {
 			return null; 
 		}

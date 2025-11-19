@@ -19,4 +19,6 @@ public interface FolderRepository extends JpaRepository<Folder, Long>, JpaSpecif
 
     @Query(value = "select count(*) from dictionary_folders df where df.folder_id = :folderId", nativeQuery = true)
     long countByFolderIdInJoin(@Param("folderId") Long folderId);
+
+  Folder getById(Long id);
 }

@@ -10,5 +10,7 @@ import java.util.List;
 public class YDef {
     private String text;
     private String pos;
+    private String gen;
+    private String anm;
     private List<YTr> tr;
 }

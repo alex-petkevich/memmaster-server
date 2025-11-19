@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface DictionaryRepository extends JpaRepository<Dictionary, Long>, JpaSpecificationExecutor<Dictionary> {
   List<Dictionary> getByFolders(List<Folder> folders);
+
+  void deleteAllByFoldersContainingAndIdNotIn(Folder folder, List<Long> ids);
 }

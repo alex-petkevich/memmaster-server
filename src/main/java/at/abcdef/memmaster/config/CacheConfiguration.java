@@ -51,6 +51,7 @@ public class CacheConfiguration {
         return cm -> {
             createCache(cm, UserRepository.USER_USERNAME_CACHE);
             createCache(cm, SettingsRepository.SETTINGS_EMAIL_CACHE);
+            createCache(cm, SettingsRepository.SETTINGS_GLOBAL_CACHE);
             createCache(cm, at.abcdef.memmaster.model.User.class.getName());
             createCache(cm, at.abcdef.memmaster.model.Role.class.getName());
             createCache(cm, at.abcdef.memmaster.model.Settings.class.getName());

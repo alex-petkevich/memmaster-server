@@ -1,5 +1,6 @@
 package at.abcdef.memmaster.controllers.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,12 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class WordDTO {
   String text;
-  String lng_src;
-  String lng_dest;
+
+  String translation;
+
+  @JsonAlias("lng_src")
+  String lngSource;
+
+  @JsonAlias("lng_dest")
+  String lngTarget;
 }

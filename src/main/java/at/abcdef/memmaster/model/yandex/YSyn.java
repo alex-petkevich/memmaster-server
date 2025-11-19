@@ -8,5 +8,6 @@ import lombok.Setter;
 public class YSyn {
     private String text;
     private String pos;
+    private String ts;
     private Integer fr;
 }
