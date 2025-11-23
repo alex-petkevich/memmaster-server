@@ -2,7 +2,6 @@ package at.abcdef.memmaster.service;
 
 import at.abcdef.memmaster.model.Dictionary;
 import at.abcdef.memmaster.model.Folder;
-import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.DictionaryRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
