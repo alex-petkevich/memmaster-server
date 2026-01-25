@@ -1,7 +1,6 @@
 package at.abcdef.memmaster.controllers;
 
 import at.abcdef.memmaster.controllers.dto.WordDTO;
-import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.service.TranslatorService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/translator")

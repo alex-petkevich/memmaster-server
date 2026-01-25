@@ -5,9 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
 
 @Getter
 @Setter
@@ -33,6 +30,8 @@ public class DictionaryPairDTO {
 
   @Size(max = 255)
   private PairType value_type;
+
+  private Boolean is_remembered;
 
   public enum PairType {
     TEXT,

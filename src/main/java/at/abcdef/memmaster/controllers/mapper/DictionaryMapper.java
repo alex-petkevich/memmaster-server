@@ -32,6 +32,7 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionaryPairDTO.setId(dictionary.getId());
         dictionaryPairDTO.setName(dictionary.getName());
         dictionaryPairDTO.setValue(dictionary.getValue());
+        dictionaryPairDTO.setIs_remembered(dictionary.getIsRemembered());
 /*
         dictionaryPairDTO.setName_file(dictionary.getNameImg());
         dictionaryPairDTO.setValue_file(dictionary.getValueImg());
@@ -64,6 +65,7 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionary.setId(dictionaryPairDTO.getId());
         dictionary.setName(dictionaryPairDTO.getName());
         dictionary.setValue(dictionaryPairDTO.getValue());
+        dictionary.setIsRemembered(dictionaryPairDTO.getIs_remembered());
 /*
         dictionary.setNameImg(dictionaryPairDTO.getName_file());
         dictionary.setValueImg(dictionaryPairDTO.getValue_file());
