@@ -39,6 +39,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: memmemmem
       APPLICATION_GENERAL_BASEURL: http://localhost/
       APPLICATION_MAIL_BASEURL: http://localhost/
+      APPLICATION_CORS_ALLOWED_ORIGINS: http://localhost:4200,http://127.0.0.1:4200,http://localhost,http://127.0.0.1
       APPLICATION_UPLOAD_LOCAL_PATH: /opt/memmaster/data/
     ports:
       - "8383:8383"

@@ -48,7 +48,7 @@ management:
   endpoints:
     web:
       cors:
-        allowed-origins: "https://mem.homesite.by,http://mem.abcdef.at/,https://mem.abcdef.at/"
+        allowed-origins: "${APPLICATION_CORS_ALLOWED_ORIGINS:https://mem.homesite.by,http://mem.abcdef.at,https://mem.abcdef.at,http://localhost:4200}"
 
 # App Properties
 application:
@@ -64,7 +64,7 @@ application:
     attach-dir: attachments
     cards-dir: cards
   cors:
-    allowed-origins: 'https://mem.homesite.by/,http://mem.abcdef.at/,https://mem.abcdef.at/'
+    allowed-origins: '${APPLICATION_CORS_ALLOWED_ORIGINS:https://mem.homesite.by,http://mem.abcdef.at,https://mem.abcdef.at,http://localhost:4200}'
   cache:
     max-entries: 1000
     time-to-live-seconds: 3600
