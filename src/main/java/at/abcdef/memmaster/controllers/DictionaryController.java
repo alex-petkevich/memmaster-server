@@ -8,6 +8,7 @@ import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.service.DictionaryService;
 import at.abcdef.memmaster.service.FoldersService;
 import at.abcdef.memmaster.service.UserService;
+import at.abcdef.memmaster.service.dictionaryio.ExportFile;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -99,7 +100,7 @@ public class DictionaryController {
       return ResponseEntity.status(403).body("You do not have permission to view this folder.");
     }
 
-    DictionaryService.ExportFile export = dictionaryService.exportDictionary(existingFolder, format);
+    ExportFile export = dictionaryService.exportDictionary(existingFolder, format);
     return ResponseEntity.ok()
       .header(HttpHeaders.CONTENT_DISPOSITION,
         "attachment; filename*=UTF-8''" + java.net.URLEncoder.encode(export.filename(), StandardCharsets.UTF_8).replace("+", "%20"))

@@ -4,6 +4,13 @@ import at.abcdef.memmaster.model.Dictionary;
 import at.abcdef.memmaster.model.Folder;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.DictionaryRepository;
+import at.abcdef.memmaster.service.dictionaryio.DictionaryExportService;
+import at.abcdef.memmaster.service.dictionaryio.DictionaryImportService;
+import at.abcdef.memmaster.service.dictionaryio.exporter.CsvDictionaryExportStrategy;
+import at.abcdef.memmaster.service.dictionaryio.exporter.DocxDictionaryExportStrategy;
+import at.abcdef.memmaster.service.dictionaryio.exporter.XlsxDictionaryExportStrategy;
+import at.abcdef.memmaster.service.dictionaryio.importer.CsvDictionaryImportStrategy;
+import at.abcdef.memmaster.service.dictionaryio.importer.WorkbookDictionaryImportStrategy;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +50,17 @@ class DictionaryServiceBulkImportFromFileTest {
 
   @BeforeEach
   void setUp() {
-    dictionaryService = new DictionaryService(dictionaryRepository, userService);
+    DictionaryImportService importService = new DictionaryImportService(List.of(
+      new CsvDictionaryImportStrategy(),
+      new WorkbookDictionaryImportStrategy()
+    ));
+    DictionaryExportService exportService = new DictionaryExportService(List.of(
+      new CsvDictionaryExportStrategy(),
+      new XlsxDictionaryExportStrategy(),
+      new DocxDictionaryExportStrategy()
+    ));
+
+    dictionaryService = new DictionaryService(dictionaryRepository, userService, importService, exportService);
     lastSavedBatch = new AtomicReference<>();
   }
 
