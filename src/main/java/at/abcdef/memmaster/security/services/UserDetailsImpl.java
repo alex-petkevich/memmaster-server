@@ -48,12 +48,13 @@ public class UserDetailsImpl implements UserDetails
 		List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name()))
 				.toList();
+		boolean active = Integer.valueOf(1).equals(user.getActive());
 		return new UserDetailsImpl(
 				user.getId(),
 				user.getUsername(),
 				user.getEmail(),
 				user.getPassword(),
-				user.getActive() == 1,
+				active,
 				user.getLang(),
 				authorities);
 	}
@@ -85,7 +86,7 @@ public class UserDetailsImpl implements UserDetails
 	@Override
 	public boolean isAccountNonLocked()
 	{
-		return active;
+		return Boolean.TRUE.equals(active);
 	}
 
 	@Override
@@ -97,7 +98,7 @@ public class UserDetailsImpl implements UserDetails
 	@Override
 	public boolean isEnabled()
 	{
-		return active;
+		return Boolean.TRUE.equals(active);
 	}
 
 }

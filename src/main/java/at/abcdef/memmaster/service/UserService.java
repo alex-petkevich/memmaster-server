@@ -115,7 +115,14 @@ public class UserService
 		currentUserData.setFirstname(signUpRequest.getFirstname());
 		currentUserData.setLastname(signUpRequest.getLastname());
 		currentUserData.setLastModifiedAt(OffsetDateTime.now());
-		currentUserData.setActive(signUpRequest.getActive());
+		if (signUpRequest.getActive() != null)
+		{
+			currentUserData.setActive(signUpRequest.getActive());
+		}
+		else if (currentUserData.getActive() == null)
+		{
+			currentUserData.setActive(0);
+		}
 		if (StringUtils.hasText(signUpRequest.getLang()))
 		{
 			currentUserData.setLang(signUpRequest.getLang());
@@ -167,7 +174,7 @@ public class UserService
 	public MessageResponseDTO checkResetKey(String key)
 	{
 		User user = userRepository.findByActivationKey(key).orElse(null);
-		if (user != null && user.getActive() == 1) {
+		if (user != null && Integer.valueOf(1).equals(user.getActive())) {
 			return new MessageResponseDTO(SUCCESSFUL);
 		}
 		return new MessageResponseDTO("");

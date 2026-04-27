@@ -16,7 +16,7 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mariadb://localhost:3306/memmaster?useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mariadb://localhost:3306/memmaster?useLegacyDatetimeCode=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
     username: memmaster
     password: memmemmem
     hikari:
@@ -66,6 +66,7 @@ application:
     local-path: 'C:/work/java/memmaster/static/'
     upload-dir: uploads
     attach-dir: attachments
+    cards-dir: cards
   cors:
     allowed-origins: 'http://localhost:8585,http://localhost:4200'
   cache:
@@ -73,3 +74,8 @@ application:
     time-to-live-seconds: 3600
   security:
     seed-key: 320bb523b651c669faaf027266d8bc33a98c461e73ba9747f79166d21a9f16
+  translator:
+    ssl:
+      trust-store: 'c:/Entwicklung/translator-truststore.jks'
+      trust-store-password: 'changeit'
+      trust-store-type: JKS
