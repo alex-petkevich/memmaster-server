@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import lombok.Getter;
@@ -141,17 +142,79 @@ public class FilesystemFilesStorageServiceImpl implements FilesStorageService
 		}
 	}
 
+	@Override
+	public String saveAttachment(MultipartFile file) {
+		String username = getCurrentUsername();
+		if (username == null || file.getOriginalFilename() == null) {
+			throw new RuntimeException("Cannot save attachment: user not authenticated or filename missing.");
+		}
+		Path dir = getAttachDir(username);
+		try {
+			Files.createDirectories(dir);
+			String uniqueFilename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+			Files.copy(file.getInputStream(), dir.resolve(uniqueFilename), StandardCopyOption.REPLACE_EXISTING);
+			return username + "/" + uniqueFilename;
+		} catch (IOException e) {
+			throw new RuntimeException("Could not store attachment: " + e.getMessage());
+		}
+	}
+
+	@Override
+	public Resource loadAttachment(String storedPath) {
+		String username = getCurrentUsername();
+		if (username == null) {
+			throw new RuntimeException("User not authenticated.");
+		}
+
+		String normalizedPath = storedPath
+				.replace('\\', '/')
+				.replaceFirst("^/+", "");
+
+		if (!normalizedPath.startsWith(username + "/")) {
+			throw new RuntimeException("Attachment access denied.");
+		}
+
+		Path attachBase = getAttachBase().toAbsolutePath().normalize();
+		Path file = attachBase.resolve(normalizedPath).normalize();
+		if (!file.startsWith(attachBase)) {
+			throw new RuntimeException("Invalid attachment path.");
+		}
+
+		try {
+			Resource resource = new UrlResource(file.toUri());
+			if (resource.exists() && resource.isReadable()) {
+				return resource;
+			}
+			throw new RuntimeException("Could not read attachment file!");
+		} catch (MalformedURLException e) {
+			throw new RuntimeException("Error reading attachment: " + e.getMessage());
+		}
+	}
+
 	private Path getUserDir()
 	{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		if (authentication != null) {
-			return Paths.get( getUploadDir(authentication.getName()));
+			return Paths.get(getUploadDir(authentication.getName()));
 		}
 		return null;
 	}
 
+	private String getCurrentUsername() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication != null ? authentication.getName() : null;
+	}
+
 	private String getUploadDir(String userId) {
 		return applicationProperties.getUpload().getLocalPath() + applicationProperties.getUpload().getUploadDir() + File.separator + userId + File.separator;
+	}
+
+	private Path getAttachBase() {
+		return Paths.get(applicationProperties.getUpload().getLocalPath() + applicationProperties.getUpload().getCardsDir());
+	}
+
+	private Path getAttachDir(String username) {
+		return getAttachBase().resolve(username);
 	}
 
     @Autowired

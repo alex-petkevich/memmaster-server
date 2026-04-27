@@ -16,6 +16,7 @@ public class ApplicationProperties {
     private final ApplicationProperties.Upload upload = new ApplicationProperties.Upload();
     private final ApplicationProperties.Security security = new ApplicationProperties.Security();
     private final ApplicationProperties.Cache cache = new ApplicationProperties.Cache();
+    private final ApplicationProperties.Translator translator = new ApplicationProperties.Translator();
 
     @Getter
     @Setter
@@ -55,6 +56,7 @@ public class ApplicationProperties {
         private String localPath = "local-path";
         private String uploadDir = "upload-dir";
         private String attachDir = "attach-dir";
+        private String cardsDir = "cards-dir";
     }
 
     @Getter
@@ -70,5 +72,21 @@ public class ApplicationProperties {
     @NoArgsConstructor
     public static class Security {
         private String seedKey = "seed-key";
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Translator {
+        private final ApplicationProperties.TranslatorSsl ssl = new ApplicationProperties.TranslatorSsl();
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class TranslatorSsl {
+        private String trustStore = "";
+        private String trustStorePassword = "";
+        private String trustStoreType = "JKS";
     }
 }

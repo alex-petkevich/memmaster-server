@@ -1,12 +1,15 @@
 package at.abcdef.memmaster.controllers;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -35,17 +38,10 @@ import at.abcdef.memmaster.service.UserService;
 @RequestMapping("/api/files")
 public class FilesController
 {
-	final
-	FilesStorageService storageService;
-
-	final
-	UserService userService;
-
-	final
-	ApplicationProperties applicationProperties;
-
-	final
-	TranslateService translate;
+	final FilesStorageService storageService;
+	final UserService userService;
+	final ApplicationProperties applicationProperties;
+	final TranslateService translate;
 
 	public FilesController(FilesStorageService storageService, UserService userService, ApplicationProperties applicationProperties, TranslateService translate) {
 		this.storageService = storageService;
@@ -71,6 +67,45 @@ public class FilesController
 		{
 			message = translate.get("files.save-cant-upload") + file.getOriginalFilename() + "!";
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponseDTO(message));
+		}
+	}
+
+	/** Upload a dictionary card attachment. Returns the stored path for later retrieval. */
+	@PostMapping("/upload-attachment")
+	@ResponseBody
+	public ResponseEntity<?> uploadAttachment(@RequestParam("file") MultipartFile file) {
+		try {
+			String storedPath = storageService.saveAttachment(file);
+			return ResponseEntity.ok(Map.of("filename", storedPath));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(new MessageResponseDTO("Could not upload attachment: " + e.getMessage()));
+		}
+	}
+
+	/** Serve a dictionary card attachment. storedPath = username/uuid_filename */
+	@GetMapping("/attachment/**")
+	@ResponseBody
+	public ResponseEntity<Resource> getAttachment(HttpServletRequest request) {
+		String rawStoredPath = request.getRequestURI().substring(request.getRequestURI().indexOf("/api/files/attachment/") + "/api/files/attachment/".length());
+		String storedPath = URLDecoder.decode(rawStoredPath, StandardCharsets.UTF_8)
+				.replace('\\', '/')
+				.replaceFirst("^/+", "");
+		try {
+			Resource file = storageService.loadAttachment(storedPath);
+			String contentType;
+			try {
+				contentType = request.getServletContext().getMimeType(file.getFile().getAbsolutePath());
+			} catch (Exception ignored) {
+				contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+			}
+			if (contentType == null) contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+			return ResponseEntity.ok()
+					.contentType(MediaType.parseMediaType(contentType))
+					.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + file.getFilename() + "\"")
+					.body(file);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}
 

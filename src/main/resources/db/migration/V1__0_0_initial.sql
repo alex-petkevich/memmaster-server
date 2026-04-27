@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `roles`
 (
 	`id`   INT PRIMARY KEY AUTO_INCREMENT,
 	`name` VARCHAR(255)
-);
+) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 insert into roles (id, name) values (1, 'ROLE_ADMIN');
 insert into roles (id, name) values (2, 'ROLE_MODERATOR');
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `users`
     `active`   INT default 0,
     `created_at`  TIMESTAMP,
     `last_modified_at`  TIMESTAMP
-);
+) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS user_roles
 (
@@ -42,13 +42,13 @@ CREATE TABLE settings
     `value`     TEXT,
     `created_at`  TIMESTAMP,
     `last_modified_at`  TIMESTAMP
-);
+) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 create table dictionary
 (
     `id`        BIGINT PRIMARY KEY AUTO_INCREMENT,
     `user_id`   INT NOT NULL,
-    `name`      VARCHAR(255),
+    `name`      VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     `name_img`      VARCHAR(255),
     `value`     VARCHAR(255),
     `value_img`     VARCHAR(255),
@@ -56,7 +56,7 @@ create table dictionary
     `is_archived` BOOLEAN,
     `created_at`  TIMESTAMP,
     `last_modified_at`  TIMESTAMP
-);
+) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE folders
 (
@@ -72,11 +72,10 @@ CREATE TABLE folders
     `public`      BOOLEAN,
     `created_at`  TIMESTAMP,
     `last_modified_at`  TIMESTAMP
-);
+) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE dictionary_folders
 (
     folder_id INT NOT NULL,
     dictionary_id INT NOT NULL
 );
-

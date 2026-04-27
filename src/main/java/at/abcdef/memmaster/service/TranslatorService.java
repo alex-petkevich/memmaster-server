@@ -7,6 +7,7 @@ import at.abcdef.memmaster.model.yandex.YDictionary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -16,11 +17,13 @@ import java.util.List;
 public class TranslatorService {
 
   private final SettingsService settingsService;
+  private final RestClient restClient;
 
   private final String URL_TEMPLATE = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=%s&lang=%s&text=%s";
 
-  public TranslatorService(SettingsService settingsService) {
+  public TranslatorService(SettingsService settingsService, @Qualifier("translatorRestClient") RestClient restClient) {
     this.settingsService = settingsService;
+    this.restClient = restClient;
   }
 
   public List<WordDTO> lookup(String text, String sourceLang, String targetLang) {
@@ -29,8 +32,6 @@ public class TranslatorService {
     if (apiKey.isEmpty()) {
       throw new NotFoundException("Translator API key is not set");
     }
-
-    RestClient restClient = RestClient.create();
 
     String result = restClient.get()
         .uri(URL_TEMPLATE.formatted(apiKey, sourceLang + "-" + targetLang, text))

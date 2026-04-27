@@ -5,6 +5,7 @@ import static at.abcdef.memmaster.util.GlobUtil.settingValue;
 import at.abcdef.memmaster.model.Settings;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.SettingsRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -13,52 +14,47 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class SettingsService
-{
-	private final SettingsRepository settingsRepository;
+public class SettingsService {
+    private final SettingsRepository settingsRepository;
 
-	public SettingsService(SettingsRepository settingsRepository) {
-		this.settingsRepository = settingsRepository;
-	}
+    public SettingsService(SettingsRepository settingsRepository) {
+        this.settingsRepository = settingsRepository;
+    }
 
-	public void saveSettings(User user, Map<String, String> values)
-	{
-		values.forEach((name, value) -> this.setSettingValue(user, name, value));
+    public void saveSettings(User user, Map<String, String> values) {
+        values.forEach((name, value) -> this.setSettingValue(user, name, value));
 
-	}
+    }
 
-	public Settings setSettingValue(User user, String name, String value) {
-    Integer userId = user != null ? user.getId() : null;
-    Settings currentSetting = settingsRepository.getByUserIdAndName(userId, name);
-		if (currentSetting == null) {
-			currentSetting = new Settings();
-			currentSetting.setName(name);
-			currentSetting.setCreatedAt(OffsetDateTime.now());
-			currentSetting.setUser(user);
-		}
-		currentSetting.setValue(value);
-		currentSetting.setLastModifiedAt(OffsetDateTime.now());
-		return settingsRepository.save(currentSetting);
-	}
+    public Settings setSettingValue(User user, String name, String value) {
+        Integer userId = user != null ? user.getId() : null;
+        Settings currentSetting = settingsRepository.getByUserIdAndName(userId, name);
+        if (currentSetting == null) {
+            currentSetting = new Settings();
+            currentSetting.setName(name);
+            currentSetting.setCreatedAt(OffsetDateTime.now());
+            currentSetting.setUser(user);
+        }
+        currentSetting.setValue(value);
+        currentSetting.setLastModifiedAt(OffsetDateTime.now());
+        return settingsRepository.save(currentSetting);
+    }
 
-	public List<Settings> getUserSettings(Integer userId)
-	{
+    public List<Settings> getUserSettings(Integer userId) {
 
-		return settingsRepository.getByUserId(userId);
-	}
+        return settingsRepository.getByUserId(userId);
+    }
 
-	public List<Settings> getGlobalSettings()
-	{
+    public List<Settings> getGlobalSettings() {
 
-		return settingsRepository.findAllByUserIdIsNull();
-	}
+        return settingsRepository.findAllByUserIdIsNull();
+    }
 
-	public String getSettingValue(String name)
-  {
-    List<Settings> settings = getGlobalSettings();
-    Optional<Settings> setting = settings.stream().filter(s -> s.getName().equals(name)).findFirst();
-    return setting.isPresent() ? setting.get().getValue() : "";
-  }
+    public String getSettingValue(String name) {
+        List<Settings> settings = getGlobalSettings();
+        Optional<Settings> setting = settings.stream().filter(s -> s.getName().equals(name)).findFirst();
+        return setting.isPresent() ? setting.get().getValue() : "";
+    }
 
 
 }

@@ -61,6 +61,8 @@ application:
   upload:
     local-path: '/var/www/memmaster/data/'
     upload-dir: uploads
+    attach-dir: attachments
+    cards-dir: cards
   cors:
     allowed-origins: 'https://mem.homesite.by/,http://mem.abcdef.at/,https://mem.abcdef.at/'
   cache:
@@ -68,3 +70,8 @@ application:
     time-to-live-seconds: 3600
   security:
     seed-key: 320bb523b651c669faaf027266d8bc33a98c46
+  translator:
+    ssl:
+      trust-store: ''
+      trust-store-password: ''
+      trust-store-type: JKS

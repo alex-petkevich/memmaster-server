@@ -33,12 +33,10 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionaryPairDTO.setName(dictionary.getName());
         dictionaryPairDTO.setValue(dictionary.getValue());
         dictionaryPairDTO.setIs_remembered(dictionary.getIsRemembered());
-/*
         dictionaryPairDTO.setName_file(dictionary.getNameImg());
         dictionaryPairDTO.setValue_file(dictionary.getValueImg());
-*/
-        dictionaryPairDTO.setName_type(StringUtils.hasText(dictionary.getName()) ? DictionaryPairDTO.PairType.TEXT : DictionaryPairDTO.PairType.FILE );
-        dictionaryPairDTO.setValue_type(StringUtils.hasText(dictionary.getValue()) ? DictionaryPairDTO.PairType.TEXT : DictionaryPairDTO.PairType.FILE );
+        dictionaryPairDTO.setName_type(StringUtils.hasText(dictionary.getNameImg()) ? DictionaryPairDTO.PairType.FILE : DictionaryPairDTO.PairType.TEXT);
+        dictionaryPairDTO.setValue_type(StringUtils.hasText(dictionary.getValueImg()) ? DictionaryPairDTO.PairType.FILE : DictionaryPairDTO.PairType.TEXT);
         return dictionaryPairDTO;
     }
 
@@ -66,10 +64,8 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionary.setName(dictionaryPairDTO.getName());
         dictionary.setValue(dictionaryPairDTO.getValue());
         dictionary.setIsRemembered(dictionaryPairDTO.getIs_remembered());
-/*
         dictionary.setNameImg(dictionaryPairDTO.getName_file());
         dictionary.setValueImg(dictionaryPairDTO.getValue_file());
-*/
         return dictionary;
     }
 

@@ -21,4 +21,10 @@ public interface FilesStorageService
 	List<Path> loadAll();
 
 	List<Path> loadAllByUsername(String userId);
+
+	/** Saves a dictionary attachment. Returns the stored relative path (username/uuid_filename). */
+	String saveAttachment(MultipartFile file);
+
+	/** Loads a dictionary attachment by its stored relative path. */
+	Resource loadAttachment(String storedPath);
 }

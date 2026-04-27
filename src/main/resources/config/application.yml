@@ -74,3 +74,8 @@ application:
     exposed-headers: 'Link,X-Total-Count'
     allow-credentials: true
     max-age: '1800'
+  translator:
+    ssl:
+      trust-store: ''
+      trust-store-password: ''
+      trust-store-type: JKS
