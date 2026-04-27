@@ -91,6 +91,32 @@ public class DictionaryController {
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(savedDictionary));
   }
 
+  @PatchMapping("/{folderId}/{pairId}/remembered")
+  public ResponseEntity<?> markAsRemembered(@Valid @PathVariable Long folderId, @Valid @PathVariable Long pairId) {
+    User user = userService.getCurrentUser();
+
+    Folder existingFolder = foldersService.getUserFolder(user.getId(), folderId);
+    if (existingFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
+    }
+
+    Dictionary updated = dictionaryService.markAsRemembered(pairId);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
+  }
+
+  @PatchMapping("/{folderId}/{pairId}/archived")
+  public ResponseEntity<?> markAsArchived(@Valid @PathVariable Long folderId, @Valid @PathVariable Long pairId) {
+    User user = userService.getCurrentUser();
+
+    Folder existingFolder = foldersService.getUserFolder(user.getId(), folderId);
+    if (existingFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
+    }
+
+    Dictionary updated = dictionaryService.markAsArchived(pairId);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
+  }
+
   @GetMapping("/{folderId}/export")
   public ResponseEntity<?> export(@Valid @PathVariable Long folderId, @RequestParam(defaultValue = "csv") String format) {
     User user = userService.getCurrentUser();

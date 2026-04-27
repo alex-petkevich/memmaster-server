@@ -33,6 +33,8 @@ public class DictionaryPairDTO {
 
   private Boolean is_remembered;
 
+  private Boolean is_archived;
+
   public enum PairType {
     TEXT,
     FILE

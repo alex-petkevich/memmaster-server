@@ -98,6 +98,20 @@ public class DictionaryService {
     }
   }
 
+  public Dictionary markAsRemembered(Long pairId) {
+    Dictionary dict = dictionaryRepository.findById(pairId)
+        .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));
+    dict.setIsRemembered(true);
+    return dictionaryRepository.save(dict);
+  }
+
+  public Dictionary markAsArchived(Long pairId) {
+    Dictionary dict = dictionaryRepository.findById(pairId)
+        .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));
+    dict.setIsArchived(true);
+    return dictionaryRepository.save(dict);
+  }
+
   public ExportFile exportDictionary(Folder folder, String format) {
     List<Dictionary> cards = getDictionaryInFolder(folder);
     String baseName = safeFileNamePart(folder.getName());

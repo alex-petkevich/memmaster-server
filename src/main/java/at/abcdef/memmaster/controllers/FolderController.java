@@ -53,10 +53,14 @@ public class FolderController
 				dbFolders.forEach(f -> {
 					if (Objects.equals(f.getParent_id(), folder.getId())) {
             f.setDictionary_count(foldersService.getFolderDictionarySize(f.getId()));
+            f.setAvailable_dictionary_count(foldersService.getFolderLearnableDictionarySize(f.getId()));
+            f.setUnarchived_dictionary_count(foldersService.getFolderUnarchivedDictionarySize(f.getId()));
 						folder.getChildren().add(f);
 					}
 				});
         folder.setDictionary_count(foldersService.getFolderDictionarySize(folder.getId()));
+        folder.setAvailable_dictionary_count(foldersService.getFolderLearnableDictionarySize(folder.getId()));
+        folder.setUnarchived_dictionary_count(foldersService.getFolderUnarchivedDictionarySize(folder.getId()));
 				folders.add(folder);
 			}
 		}

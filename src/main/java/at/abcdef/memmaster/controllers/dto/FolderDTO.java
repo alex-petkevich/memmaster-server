@@ -40,4 +40,8 @@ public class FolderDTO {
     private final List<FolderDTO> children = new ArrayList<>();
 
     private Long dictionary_count;
+
+    private Long available_dictionary_count;
+
+    private Long unarchived_dictionary_count;
 }

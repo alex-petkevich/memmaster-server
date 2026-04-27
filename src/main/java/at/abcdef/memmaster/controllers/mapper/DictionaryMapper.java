@@ -2,9 +2,7 @@ package at.abcdef.memmaster.controllers.mapper;
 
 import at.abcdef.memmaster.controllers.dto.DictionaryDTO;
 import at.abcdef.memmaster.controllers.dto.DictionaryPairDTO;
-import at.abcdef.memmaster.controllers.dto.FolderDTO;
 import at.abcdef.memmaster.model.Dictionary;
-import at.abcdef.memmaster.model.Folder;
 import at.abcdef.memmaster.util.BasicMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,6 +31,7 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionaryPairDTO.setName(dictionary.getName());
         dictionaryPairDTO.setValue(dictionary.getValue());
         dictionaryPairDTO.setIs_remembered(dictionary.getIsRemembered());
+        dictionaryPairDTO.setIs_archived(dictionary.getIsArchived());
         dictionaryPairDTO.setName_file(dictionary.getNameImg());
         dictionaryPairDTO.setValue_file(dictionary.getValueImg());
         dictionaryPairDTO.setName_type(StringUtils.hasText(dictionary.getNameImg()) ? DictionaryPairDTO.PairType.FILE : DictionaryPairDTO.PairType.TEXT);
@@ -64,6 +63,7 @@ public interface DictionaryMapper extends BasicMapper<Dictionary, DictionaryDTO>
         dictionary.setName(dictionaryPairDTO.getName());
         dictionary.setValue(dictionaryPairDTO.getValue());
         dictionary.setIsRemembered(dictionaryPairDTO.getIs_remembered());
+        dictionary.setIsArchived(dictionaryPairDTO.getIs_archived());
         dictionary.setNameImg(dictionaryPairDTO.getName_file());
         dictionary.setValueImg(dictionaryPairDTO.getValue_file());
         return dictionary;

@@ -20,5 +20,11 @@ public interface FolderRepository extends JpaRepository<Folder, Long>, JpaSpecif
     @Query(value = "select count(*) from dictionary_folders df where df.folder_id = :folderId", nativeQuery = true)
     long countByFolderIdInJoin(@Param("folderId") Long folderId);
 
+    @Query(value = "select count(*) from dictionary_folders df join dictionary d on d.id = df.dictionary_id where df.folder_id = :folderId and coalesce(d.is_archived, false) = false and coalesce(d.is_remembered, false) = false", nativeQuery = true)
+    long countLearnableByFolderIdInJoin(@Param("folderId") Long folderId);
+
+    @Query(value = "select count(*) from dictionary_folders df join dictionary d on d.id = df.dictionary_id where df.folder_id = :folderId and coalesce(d.is_archived, false) = false", nativeQuery = true)
+    long countUnarchivedByFolderIdInJoin(@Param("folderId") Long folderId);
+
   Folder getById(Long id);
 }

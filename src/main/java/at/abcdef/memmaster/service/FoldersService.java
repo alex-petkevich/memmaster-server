@@ -140,4 +140,12 @@ public class FoldersService
   public long getFolderDictionarySize(Long id) {
     return folderRepository.countByFolderIdInJoin(id);
   }
+
+  public long getFolderLearnableDictionarySize(Long id) {
+    return folderRepository.countLearnableByFolderIdInJoin(id);
+  }
+
+  public long getFolderUnarchivedDictionarySize(Long id) {
+    return folderRepository.countUnarchivedByFolderIdInJoin(id);
+  }
 }
