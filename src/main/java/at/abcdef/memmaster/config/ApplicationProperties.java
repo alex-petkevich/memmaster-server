@@ -15,6 +15,7 @@ public class ApplicationProperties {
     private final ApplicationProperties.Mail mail = new ApplicationProperties.Mail();
     private final ApplicationProperties.Upload upload = new ApplicationProperties.Upload();
     private final ApplicationProperties.Security security = new ApplicationProperties.Security();
+    private final ApplicationProperties.Oauth oauth = new ApplicationProperties.Oauth();
     private final ApplicationProperties.Cache cache = new ApplicationProperties.Cache();
     private final ApplicationProperties.Translator translator = new ApplicationProperties.Translator();
 
@@ -72,6 +73,13 @@ public class ApplicationProperties {
     @NoArgsConstructor
     public static class Security {
         private String seedKey = "seed-key";
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class Oauth {
+        private String googleClientId = "";
     }
 
     @Getter

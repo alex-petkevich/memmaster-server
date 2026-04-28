@@ -15,12 +15,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import at.abcdef.memmaster.config.ApplicationProperties;
 import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.RoleRepository;
 import at.abcdef.memmaster.repository.UserRepository;
 import at.abcdef.memmaster.security.jwt.JwtUtils;
+import at.abcdef.memmaster.service.oauth.OAuthService;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest
@@ -37,6 +40,8 @@ class UserServiceTest
 	private PasswordEncoder encoder;
 	@Mock
 	private SendMailService sendMailService;
+	@Mock
+	private OAuthService googleOAuthService;
 
 	private UserService userService;
 
@@ -50,7 +55,8 @@ class UserServiceTest
 				roleRepository,
 				encoder,
 				sendMailService,
-				new ApplicationProperties());
+				new ApplicationProperties(),
+                googleOAuthService);
 	}
 
 	@Test

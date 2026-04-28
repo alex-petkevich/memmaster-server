@@ -56,5 +56,10 @@ public class SettingsService {
         return setting.isPresent() ? setting.get().getValue() : "";
     }
 
+    public String getUserSettingValue(Integer userId, String name) {
+        Settings setting = settingsRepository.getByUserIdAndName(userId, name);
+        return setting != null ? setting.getValue() : "";
+    }
+
 
 }

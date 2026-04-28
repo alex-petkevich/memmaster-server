@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -144,6 +145,37 @@ class DictionaryServiceBulkImportFromFileTest {
       () -> dictionaryService.bulkImportDictionaryFromFile(folder, file));
 
     verify(dictionaryRepository, never()).saveAll(any());
+  }
+
+  @Test
+  void markAsRememberedInFolderShouldRejectPairOutsideFolder() {
+    Folder folder = new Folder();
+    folder.setId(20L);
+
+    when(dictionaryRepository.existsByIdAndFoldersContaining(100L, folder)).thenReturn(false);
+
+    assertThrows(IllegalArgumentException.class,
+      () -> dictionaryService.markAsRememberedInFolder(folder, 100L));
+
+    verify(dictionaryRepository, never()).findById(any());
+  }
+
+  @Test
+  void markAsRememberedInFolderShouldUpdatePairInsideFolder() {
+    Folder folder = new Folder();
+    folder.setId(21L);
+    Dictionary dict = new Dictionary();
+    dict.setId(101L);
+    dict.setIsRemembered(false);
+
+    when(dictionaryRepository.existsByIdAndFoldersContaining(101L, folder)).thenReturn(true);
+    when(dictionaryRepository.findById(101L)).thenReturn(Optional.of(dict));
+    when(dictionaryRepository.save(dict)).thenReturn(dict);
+
+    Dictionary saved = dictionaryService.markAsRememberedInFolder(folder, 101L);
+
+    assertEquals(true, saved.getIsRemembered());
+    verify(dictionaryRepository).save(dict);
   }
 
   private byte[] buildXlsxBytes(String[][] rows) throws IOException {

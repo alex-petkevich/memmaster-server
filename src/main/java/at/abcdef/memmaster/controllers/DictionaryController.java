@@ -100,7 +100,7 @@ public class DictionaryController {
       return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
     }
 
-    Dictionary updated = dictionaryService.markAsRemembered(pairId);
+    Dictionary updated = dictionaryService.markAsRememberedInFolder(existingFolder, pairId);
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
   }
 
@@ -113,7 +113,7 @@ public class DictionaryController {
       return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
     }
 
-    Dictionary updated = dictionaryService.markAsArchived(pairId);
+    Dictionary updated = dictionaryService.markAsArchivedInFolder(existingFolder, pairId);
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
   }
 

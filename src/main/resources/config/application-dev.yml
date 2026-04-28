@@ -79,3 +79,5 @@ application:
       trust-store: 'c:/Entwicklung/translator-truststore.jks'
       trust-store-password: 'changeit'
       trust-store-type: JKS
+  oauth:
+    google-client-id: '${APPLICATION_OAUTH_GOOGLE_CLIENT_ID:}'

@@ -9,6 +9,8 @@ import java.util.UUID;
 import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.model.specification.UserSpecification;
 import at.abcdef.memmaster.repository.RoleRepository;
+import at.abcdef.memmaster.service.oauth.OAuthService;
+import at.abcdef.memmaster.service.oauth.OAuthUserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,19 +24,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+
 import at.abcdef.memmaster.config.ApplicationProperties;
-import at.abcdef.memmaster.controllers.dto.JwtDTO;
+import at.abcdef.memmaster.controllers.dto.oauth.JwtDTO;
 import at.abcdef.memmaster.controllers.dto.MessageResponseDTO;
 import at.abcdef.memmaster.model.Role;
 import at.abcdef.memmaster.model.User;
 import at.abcdef.memmaster.repository.UserRepository;
 import at.abcdef.memmaster.security.jwt.JwtUtils;
 import at.abcdef.memmaster.security.services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 @Transactional
 public class UserService
 {
+	private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
 	public static final String SUCCESSFUL = "successful";
 	final AuthenticationManager authenticationManager;
 	final JwtUtils jwtUtils;
@@ -42,11 +49,12 @@ public class UserService
 	final RoleRepository roleRepository;
 	final PasswordEncoder encoder;
 	private final SendMailService sendMailService;
-
 	private final ApplicationProperties applicationProperties;
+	private final OAuthService googleOAuthService;
 
 	public UserService(AuthenticationManager authenticationManager, JwtUtils jwtUtils, UserRepository userRepository,
-					   RoleRepository roleRepository, PasswordEncoder encoder, SendMailService sendMailService, ApplicationProperties applicationProperties)
+					   RoleRepository roleRepository, PasswordEncoder encoder, SendMailService sendMailService,
+					   ApplicationProperties applicationProperties, OAuthService googleOAuthService)
 	{
 		this.authenticationManager = authenticationManager;
 		this.jwtUtils = jwtUtils;
@@ -55,6 +63,7 @@ public class UserService
 		this.encoder = encoder;
 		this.sendMailService = sendMailService;
 		this.applicationProperties = applicationProperties;
+		this.googleOAuthService = googleOAuthService;
 	}
 
 	public JwtDTO authenticate(String username, String password)
@@ -76,6 +85,85 @@ public class UserService
 				userDetails.getLang(),
 				roles);
 	}
+
+	public JwtDTO authenticateWithGoogle(String idToken)
+	{
+		OAuthUserInfo userInfo = googleOAuthService.verifyAndExtractUserInfo(idToken);
+
+		String configuredClientId = applicationProperties.getOauth().getGoogleClientId();
+		if (!StringUtils.hasText(configuredClientId)) {
+			throw new IllegalStateException("Google OAuth is not configured.");
+		}
+		if (!userInfo.emailVerified()) {
+			throw new IllegalArgumentException("Google account email is not verified.");
+		}
+
+		User user = userRepository.findByEmail(userInfo.email())
+				.orElseGet(() -> createOAuthUser(userInfo));
+
+		if (!Integer.valueOf(1).equals(user.getActive())) {
+			user.setActive(1);
+			user.setActivationKey("");
+			user.setLastModifiedAt(OffsetDateTime.now());
+			user = userRepository.save(user);
+		}
+
+		return buildJwtForUser(user);
+	}
+
+	private User createOAuthUser(OAuthUserInfo userInfo)
+	{
+		Role userRole = roleRepository.findByName(at.abcdef.memmaster.model.ERole.ROLE_USER)
+				.orElseThrow(() -> new IllegalStateException("ROLE_USER not found"));
+
+		User user = new User();
+		user.setEmail(userInfo.email());
+		user.setUsername(generateUniqueUsername(userInfo.email()));
+		user.setFirstname(userInfo.firstName());
+		user.setLastname(userInfo.lastName());
+		user.setActive(1);
+		user.setActivationKey("");
+		user.setLang(applicationProperties.getGeneral().getDefaultLang());
+		user.setCreatedAt(OffsetDateTime.now());
+		user.setLastModifiedAt(OffsetDateTime.now());
+		user.setRoles(Set.of(userRole));
+		return userRepository.save(user);
+	}
+
+	private String generateUniqueUsername(String email)
+	{
+		String localPart = email.split("@")[0].replaceAll("[^A-Za-z0-9._-]", "");
+		String base = StringUtils.hasText(localPart) ? localPart : "user";
+		if (base.length() > 30) {
+			base = base.substring(0, 30);
+		}
+
+		String username = base;
+		int index = 1;
+		while (userRepository.existsByUsername(username)) {
+			String suffix = String.valueOf(index++);
+			int maxBaseLen = Math.max(1, 30 - suffix.length());
+			String trimmedBase = base.length() > maxBaseLen ? base.substring(0, maxBaseLen) : base;
+			username = trimmedBase + suffix;
+		}
+		return username;
+	}
+
+
+	private JwtDTO buildJwtForUser(User user)
+	{
+		UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+		Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		String jwt = jwtUtils.generateJwtToken(authentication);
+
+		List<String> roles = userDetails.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.toList();
+
+		return new JwtDTO(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), userDetails.getLang(), roles);
+	}
+
 
 	public boolean isUsernameExists(String username)
 	{
@@ -208,7 +296,7 @@ public class UserService
 
 	public Page<User> getUsers(String name, String username, String email, String role, Boolean active, Pageable pageable)
 	{
-		Specification<User> spec = Specification.where(null);
+		Specification<User> spec = (root, query, cb) -> cb.conjunction();
 
 		if (StringUtils.hasText(username)) {
 			spec = spec.and(UserSpecification.hasUsername(username));

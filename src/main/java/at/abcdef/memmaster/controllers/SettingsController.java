@@ -78,4 +78,25 @@ public class SettingsController
     return ResponseEntity.ok().build();
   }
 
+  @PostMapping("/home-preferences")
+  @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+  public ResponseEntity<?> saveHomePreferences(@Valid @RequestBody Map<String, String> preferences)
+  {
+    User user = userService.getCurrentUser();
+    settingsService.saveSettings(user, preferences);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/home-preferences")
+  @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+  public ResponseEntity<?> getHomePreferences()
+  {
+    User user = userService.getCurrentUser();
+    Map<String, String> result = Map.of(
+      "selectedFolderId", settingsService.getUserSettingValue(user.getId(), "home_selected_folder_id"),
+      "includeRemembered", settingsService.getUserSettingValue(user.getId(), "home_include_remembered")
+    );
+    return ResponseEntity.ok(result);
+  }
+
 }

@@ -14,4 +14,6 @@ public interface DictionaryRepository extends JpaRepository<Dictionary, Long>, J
   void deleteAllByFoldersContainingAndIdNotIn(Folder folder, List<Long> ids);
 
   Optional<Dictionary> findByNameAndFoldersContaining(String name, Folder folder);
+
+  boolean existsByIdAndFoldersContaining(Long id, Folder folder);
 }

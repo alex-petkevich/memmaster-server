@@ -20,6 +20,7 @@ public interface SettingsRepository extends JpaRepository<Settings, Long>
 
     Settings getByUserIdAndName(Integer userId, String name);
 
+
     @Cacheable(cacheNames = SETTINGS_EMAIL_CACHE)
     @Query("SELECT user FROM Settings WHERE name = 'period' AND value != ''")
     List<User> getUserWithEmailSettings();

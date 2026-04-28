@@ -15,16 +15,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import at.abcdef.memmaster.controllers.dto.oauth.GoogleAuthDTO;
+import at.abcdef.memmaster.controllers.dto.oauth.JwtDTO;
 import at.abcdef.memmaster.model.ERole;
 import at.abcdef.memmaster.model.Role;
 import at.abcdef.memmaster.repository.RoleRepository;
 import at.abcdef.memmaster.service.TranslateService;
 import at.abcdef.memmaster.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/account")
 public class AccountController
 {
+	private static final Logger log = LoggerFactory.getLogger(AccountController.class);
+
 	final
 	RoleRepository roleRepository;
 
@@ -71,6 +77,21 @@ public class AccountController
 		userService.createUser(signUpRequest, roles);
 		
 		return ResponseEntity.ok(new MessageResponseDTO(translate.get("account.register-user.user-registered")));
+	}
+
+	@PostMapping("/oauth/google")
+	public ResponseEntity<?> authenticateGoogle(@Valid @RequestBody GoogleAuthDTO request)
+	{
+		log.info("Google OAuth request received");
+		try {
+			JwtDTO response = userService.authenticateWithGoogle(request.getIdToken());
+			log.info("Google OAuth authentication successful for user: {}", response.getUsername());
+			return ResponseEntity.ok(response);
+		}
+		catch (IllegalArgumentException | IllegalStateException e) {
+			log.warn("Google OAuth authentication failed: {}", e.getMessage(), e);
+			return ResponseEntity.badRequest().body(new MessageResponseDTO(e.getMessage()));
+		}
 	}
 
 	@PostMapping("/activate")

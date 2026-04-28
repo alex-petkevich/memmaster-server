@@ -1,6 +1,7 @@
 package at.abcdef.memmaster.config;
 
 import at.abcdef.memmaster.repository.SettingsRepository;
+import at.abcdef.memmaster.repository.RoleRepository;
 import at.abcdef.memmaster.repository.UserRepository;
 import at.abcdef.memmaster.service.FilesStorageService;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
@@ -50,6 +51,7 @@ public class CacheConfiguration {
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
             createCache(cm, UserRepository.USER_USERNAME_CACHE);
+            createCache(cm, RoleRepository.ROLE_BY_NAME_CACHE);
             createCache(cm, SettingsRepository.SETTINGS_EMAIL_CACHE);
             createCache(cm, SettingsRepository.SETTINGS_GLOBAL_CACHE);
             createCache(cm, at.abcdef.memmaster.model.User.class.getName());

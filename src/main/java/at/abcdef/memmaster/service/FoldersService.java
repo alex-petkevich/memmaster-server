@@ -6,13 +6,12 @@ import at.abcdef.memmaster.model.specification.FolderSpecification;
 import at.abcdef.memmaster.repository.FolderRepository;
 
 import jakarta.transaction.Transactional;
-import org.flywaydb.core.internal.util.StringUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -47,7 +46,7 @@ public class FoldersService
 
 	public List<Folder> getUserFolders(Integer userId , String name, String uuid, String parentId, Boolean active, String sort)
 	{
-    Specification<Folder> spec = getFolderSearchSpecification(name, uuid, parentId, active);
+    Specification<Folder> spec = getFolderSearchSpecification(userId, name, uuid, parentId, active);
 
     Sort sortOder = getFolderSearchOrders(sort);
 
@@ -87,8 +86,10 @@ public class FoldersService
     return sortOder;
   }
 
-  private static Specification<Folder> getFolderSearchSpecification(String name, String uuid, String parentId, Boolean active) {
-    Specification<Folder> spec = (root, query, builder) -> null;
+  private static Specification<Folder> getFolderSearchSpecification(Integer userId, String name, String uuid, String parentId, Boolean active) {
+    Specification<Folder> spec = (root, query, builder) -> builder.conjunction();
+
+    spec = spec.and(FolderSpecification.visibleToUser(userId));
 
     if (name != null && !name.isEmpty()) {
       spec = spec.and(FolderSpecification.hasName(name.toLowerCase()));
@@ -106,7 +107,10 @@ public class FoldersService
   }
 
   public Folder getUserFolder(Integer userId, Long folderId) {
-		Folder folder = folderRepository.getById(folderId);
+		Folder folder = folderRepository.findById(folderId).orElse(null);
+		if (folder == null) {
+			return null;
+		}
 		if (!Objects.equals(folder.getUser().getId(), userId)) {
 			return null; 
 		}
@@ -114,11 +118,21 @@ public class FoldersService
 	}
 
   public Folder getUserOrPublicFolder(Integer userId, Long folderId) {
-    Folder folder = folderRepository.getReferenceById(folderId);
-    if (!Objects.equals(folder.getUser().getId(), userId) && !folder.getIsPublic()) {
+    Folder folder = folderRepository.findById(folderId).orElse(null);
+    if (folder == null) {
+      return null;
+    }
+    if (!Objects.equals(folder.getUser().getId(), userId) && !Boolean.TRUE.equals(folder.getIsPublic())) {
       return null;
     }
     return folder;
+  }
+
+  public Folder getPublicFolderByUuid(String uuid) {
+    if (!StringUtils.hasText(uuid)) {
+      return null;
+    }
+    return folderRepository.findByUuidAndIsPublicTrue(uuid).orElse(null);
   }
 
 	public void deleteUserFolder(Integer userId, Long folderId) {

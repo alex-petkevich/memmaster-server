@@ -46,6 +46,43 @@ public class FolderController
 		User user = userService.getCurrentUser();
 		List<FolderDTO> dbFolders = foldersService.getUserFolders(user.getId(), name, uuid, parent_id, active, sort).stream().map(folderMapper::toEntity).toList();
 
+		return ResponseEntity.ok(buildFolderTree(dbFolders));
+	}
+
+	@GetMapping("/mine")
+	public ResponseEntity<List<FolderDTO>> getMyFolders(@RequestParam(required = false) String name,
+										@RequestParam(required = false)  String uuid,
+										@RequestParam(required = false)  String parent_id,
+										@RequestParam (required = false) Boolean active,
+									   @RequestParam(defaultValue = "createdAt-desc") String sort)
+	{
+		User user = userService.getCurrentUser();
+		List<FolderDTO> dbFolders = foldersService.getUserFolders(user.getId(), name, uuid, parent_id, active, sort)
+				.stream()
+				.filter(f -> Objects.equals(f.getUser().getId(), user.getId()))
+				.map(folderMapper::toEntity)
+				.toList();
+
+		return ResponseEntity.ok(buildFolderTree(dbFolders));
+	}
+
+	@GetMapping("/shared/{uuid}")
+	public ResponseEntity<FolderDTO> getSharedFolderByUuid(@PathVariable String uuid)
+	{
+		Folder folder = foldersService.getPublicFolderByUuid(uuid);
+		if (folder == null) {
+			return ResponseEntity.notFound().build();
+		}
+
+		FolderDTO folderDTO = folderMapper.toEntity(folder);
+		folderDTO.setDictionary_count(foldersService.getFolderDictionarySize(folderDTO.getId()));
+		folderDTO.setAvailable_dictionary_count(foldersService.getFolderLearnableDictionarySize(folderDTO.getId()));
+		folderDTO.setUnarchived_dictionary_count(foldersService.getFolderUnarchivedDictionarySize(folderDTO.getId()));
+		return ResponseEntity.ok(folderDTO);
+	}
+
+	private List<FolderDTO> buildFolderTree(List<FolderDTO> dbFolders) {
+
 		List<FolderDTO> folders = new ArrayList<>();
 
 		for (FolderDTO folder : dbFolders) {
@@ -65,7 +102,7 @@ public class FolderController
 			}
 		}
 
-		return ResponseEntity.ok(folders);
+		return folders;
 	}
 
 	@PostMapping("/")
@@ -104,7 +141,10 @@ public class FolderController
 	public ResponseEntity<FolderDTO> get(@Valid @PathVariable Long id)
 	{
 		User user = userService.getCurrentUser();
-		Folder folder = foldersService.getUserFolder(user.getId(), id);
+		Folder folder = foldersService.getUserOrPublicFolder(user.getId(), id);
+		if (folder == null) {
+			return ResponseEntity.status(403).build();
+		}
 
 		return ResponseEntity.ok(folderMapper.toEntity(folder));
 	}

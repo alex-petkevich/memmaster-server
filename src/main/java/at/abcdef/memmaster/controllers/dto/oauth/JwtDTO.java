@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.controllers.dto;
+package at.abcdef.memmaster.controllers.dto.oauth;
 
 import java.util.List;
 

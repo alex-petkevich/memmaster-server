@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import at.abcdef.memmaster.model.Folder;
 
@@ -25,6 +26,8 @@ public interface FolderRepository extends JpaRepository<Folder, Long>, JpaSpecif
 
     @Query(value = "select count(*) from dictionary_folders df join dictionary d on d.id = df.dictionary_id where df.folder_id = :folderId and coalesce(d.is_archived, false) = false", nativeQuery = true)
     long countUnarchivedByFolderIdInJoin(@Param("folderId") Long folderId);
+
+    Optional<Folder> findByUuidAndIsPublicTrue(String uuid);
 
   Folder getById(Long id);
 }

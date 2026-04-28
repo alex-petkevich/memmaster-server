@@ -8,6 +8,12 @@ RUN mvn -Pprod -DskipTests clean package
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
+# Ensure OS CA certificates (including Google's root CA) are up to date
+# so outbound HTTPS calls (e.g. Google tokeninfo) succeed from the JVM.
+RUN apt-get update -qq && apt-get install -y --no-install-recommends ca-certificates && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=builder /build/target/*.jar /app/app.jar
 
 EXPOSE 8383

@@ -79,3 +79,5 @@ application:
       trust-store: ''
       trust-store-password: ''
       trust-store-type: JKS
+  oauth:
+    google-client-id: '306722608219-fposdgkgpsb423n4o6uj9gok9ao0l7ce.apps.googleusercontent.com'

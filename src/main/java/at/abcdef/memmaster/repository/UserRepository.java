@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	String USER_USERNAME_CACHE = "userUsername";
 
 	Optional<User> findByUsername(String username);
+
+	Optional<User> findByEmail(String email);
 	
 	Optional<User> findByActivationKey(String activationKey);
 	

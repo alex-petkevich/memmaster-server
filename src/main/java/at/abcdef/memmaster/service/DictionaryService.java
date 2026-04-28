@@ -98,6 +98,11 @@ public class DictionaryService {
     }
   }
 
+  public List<Dictionary> copyToFolder(Folder sourceFolder, Folder targetFolder) {
+    List<Dictionary> sourcePairs = getDictionaryInFolder(sourceFolder);
+    return bulkImportDictionary(targetFolder, sourcePairs);
+  }
+
   public Dictionary markAsRemembered(Long pairId) {
     Dictionary dict = dictionaryRepository.findById(pairId)
         .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));
@@ -105,11 +110,21 @@ public class DictionaryService {
     return dictionaryRepository.save(dict);
   }
 
+  public Dictionary markAsRememberedInFolder(Folder folder, Long pairId) {
+    assertPairInFolder(folder, pairId);
+    return markAsRemembered(pairId);
+  }
+
   public Dictionary markAsArchived(Long pairId) {
     Dictionary dict = dictionaryRepository.findById(pairId)
         .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));
     dict.setIsArchived(true);
     return dictionaryRepository.save(dict);
+  }
+
+  public Dictionary markAsArchivedInFolder(Folder folder, Long pairId) {
+    assertPairInFolder(folder, pairId);
+    return markAsArchived(pairId);
   }
 
   public ExportFile exportDictionary(Folder folder, String format) {
@@ -148,5 +163,11 @@ public class DictionaryService {
     }
     String normalized = key.trim().toLowerCase(Locale.ROOT);
     return normalized.isEmpty() ? null : normalized;
+  }
+
+  private void assertPairInFolder(Folder folder, Long pairId) {
+    if (!dictionaryRepository.existsByIdAndFoldersContaining(pairId, folder)) {
+      throw new IllegalArgumentException("Dictionary entry not found in folder: " + pairId);
+    }
   }
 }

@@ -29,9 +29,17 @@ public class FolderSpecification
 		return (root, query, criteriaBuilder) ->
 				criteriaBuilder.equal(root.get("active"), active);
 	}
+
+	public static Specification<Folder> visibleToUser(Integer userId) {
+		return (root, query, criteriaBuilder) -> criteriaBuilder.or(
+				criteriaBuilder.equal(root.get("user").get("id"), userId),
+				criteriaBuilder.isTrue(root.get("isPublic"))
+		);
+	}
+
 	public static Specification<Folder> isPublic(Boolean isPublic) {
 		return (root, query, criteriaBuilder) ->
-				criteriaBuilder.equal(root.get("isPublic"), Boolean.TRUE.equals(isPublic) ? 1 : 0);
+				criteriaBuilder.equal(root.get("isPublic"), Boolean.TRUE.equals(isPublic));
 	}
 	public static Specification<Folder> hasIcon(String icon) {
 		return (root, query, criteriaBuilder) ->
