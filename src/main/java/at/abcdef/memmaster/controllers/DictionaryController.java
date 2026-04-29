@@ -117,6 +117,38 @@ public class DictionaryController {
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
   }
 
+  @PatchMapping("/{folderId}/{pairId}/toggle-archived")
+  public ResponseEntity<?> toggleArchived(@Valid @PathVariable Long folderId, @Valid @PathVariable Long pairId) {
+    User user = userService.getCurrentUser();
+
+    Folder existingFolder = foldersService.getUserFolder(user.getId(), folderId);
+    if (existingFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
+    }
+
+    Dictionary updated = dictionaryService.toggleArchivedInFolder(existingFolder, pairId);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(updated));
+  }
+
+  @PostMapping("/{sourceFolderId}/copy-to/{targetFolderId}")
+  public ResponseEntity<?> copyToFolder(@Valid @PathVariable Long sourceFolderId,
+                                        @Valid @PathVariable Long targetFolderId) {
+    User user = userService.getCurrentUser();
+
+    Folder sourceFolder = foldersService.getUserOrPublicFolder(user.getId(), sourceFolderId);
+    if (sourceFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to read this folder.");
+    }
+
+    Folder targetFolder = foldersService.getUserFolder(user.getId(), targetFolderId);
+    if (targetFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to write to this folder.");
+    }
+
+    List<Dictionary> copied = dictionaryService.copyToFolder(sourceFolder, targetFolder);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(copied));
+  }
+
   @GetMapping("/{folderId}/export")
   public ResponseEntity<?> export(@Valid @PathVariable Long folderId, @RequestParam(defaultValue = "csv") String format) {
     User user = userService.getCurrentUser();

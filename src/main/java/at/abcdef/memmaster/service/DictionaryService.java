@@ -122,9 +122,21 @@ public class DictionaryService {
     return dictionaryRepository.save(dict);
   }
 
+  public Dictionary toggleArchived(Long pairId) {
+    Dictionary dict = dictionaryRepository.findById(pairId)
+        .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));
+    dict.setIsArchived(!Boolean.TRUE.equals(dict.getIsArchived()));
+    return dictionaryRepository.save(dict);
+  }
+
   public Dictionary markAsArchivedInFolder(Folder folder, Long pairId) {
     assertPairInFolder(folder, pairId);
     return markAsArchived(pairId);
+  }
+
+  public Dictionary toggleArchivedInFolder(Folder folder, Long pairId) {
+    assertPairInFolder(folder, pairId);
+    return toggleArchived(pairId);
   }
 
   public ExportFile exportDictionary(Folder folder, String format) {
