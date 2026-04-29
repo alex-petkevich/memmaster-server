@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.service.oauth;
+package at.abcdef.memmaster.security.oauth;
 
 /**
  * Normalized user information extracted from an OAuth provider's token.

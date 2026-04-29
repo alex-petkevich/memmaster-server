@@ -1,4 +1,4 @@
-package at.abcdef.memmaster.service.oauth;
+package at.abcdef.memmaster.security.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
