@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import at.abcdef.memmaster.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User>
+public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>
 {
 	String USER_USERNAME_CACHE = "userUsername";
 

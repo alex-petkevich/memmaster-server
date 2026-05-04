@@ -317,7 +317,7 @@ public class UserService
 		return userRepository.findAll(spec, pageable);
 	}
 
-	public User adminUserActivation(Long userId) {
+	public User adminUserActivation(Integer userId) {
 		Optional<User> user = userRepository.findById(userId);
 		if (user.isEmpty()) {
 			return null;
@@ -328,7 +328,7 @@ public class UserService
 		return userRepository.save(saveUser);
 	}
 
-	public User getUser(Long userId)
+	public User getUser(Integer userId)
 	{
 		return userRepository.findById(userId).orElse(null);
 	}
@@ -338,7 +338,7 @@ public class UserService
 		return roleRepository.findAll();
 	}
 
-	public void deleteUser(Long id) {
+	public void deleteUser(Integer id) {
 		if (id != null) {
 			userRepository.deleteById(id);
 		}

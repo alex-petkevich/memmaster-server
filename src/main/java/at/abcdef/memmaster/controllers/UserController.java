@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import at.abcdef.memmaster.controllers.dto.MessageResponseDTO;
-import at.abcdef.memmaster.controllers.dto.UserDTO;
 import at.abcdef.memmaster.controllers.mapper.UserMapper;
 import at.abcdef.memmaster.controllers.mapper.UserSignupRequestMapper;
 import at.abcdef.memmaster.model.User;
@@ -52,7 +51,7 @@ public class UserController {
 		this.translate = translate;
 	}
 
-	@PostMapping("/")
+	@PostMapping
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<MessageResponseDTO> saveUser(@Valid @RequestBody UserDTO userDTO) {
 		User currentUserData = userService.getCurrentUser();
@@ -76,7 +75,7 @@ public class UserController {
 		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.saved-successfully")));
 	}
 
-	@GetMapping("/")
+	@GetMapping
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public UserDTO getUserInfo() {
 		User user = userService.getCurrentUser();
@@ -100,7 +99,7 @@ public class UserController {
 		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.lang-updated-successfully")));
 	}
 
-	@GetMapping("/admin/")
+	@GetMapping("/admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Page<UserDTO>> getUsers(@RequestParam(required = false) String name,
 										@RequestParam(required = false)  String username,
@@ -117,9 +116,9 @@ public class UserController {
 		return ResponseEntity.ok(users);
 	}
 
-	@PostMapping("/admin/activate/")
+	@PostMapping("/admin/activate")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UserDTO> activateUser(@RequestBody Long userId) {
+	public ResponseEntity<UserDTO> activateUser(@RequestBody Integer userId) {
 
         UserDTO user = userMapper.toEntity(userService.adminUserActivation(userId));
 
@@ -128,14 +127,14 @@ public class UserController {
 
 	@GetMapping("/admin/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+	public ResponseEntity<UserDTO> getUser(@PathVariable Integer id) {
 
         UserDTO user = userMapper.toEntity(userService.getUser(id));
 
 		return ResponseEntity.ok(user);
 	}
 
-	@GetMapping("/admin/roles/")
+	@GetMapping("/admin/roles")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<RoleDTO>> getRoles() {
 
@@ -144,12 +143,12 @@ public class UserController {
 		return ResponseEntity.ok(roles);
 	}
 
-	@PostMapping("/admin/")
+	@PostMapping("/admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<MessageResponseDTO> saveUserAdmin(@Valid @RequestBody UserDTO userDTO) {
 		User userData;
 		if (userDTO.getId() != null) {
-			userData = userService.getUser(userDTO.getId());
+			userData = userService.getUser(Math.toIntExact(userDTO.getId()));
 		} else {
 			userData = new User();
 			userData.setCreatedAt(OffsetDateTime.now());
@@ -175,7 +174,7 @@ public class UserController {
 
 	@DeleteMapping("/admin/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<MessageResponseDTO> deleteUserAdmin(@PathVariable Long id) {
+	public ResponseEntity<MessageResponseDTO> deleteUserAdmin(@PathVariable Integer id) {
 		this.userService.deleteUser(id);
 
 		return ResponseEntity.ok(new MessageResponseDTO(translate.get("user.deleted-successfully")));

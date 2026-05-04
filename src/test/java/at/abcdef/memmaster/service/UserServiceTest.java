@@ -101,9 +101,9 @@ class UserServiceTest
 	@Test
 	void getUserShouldReturnNullWhenNotFound()
 	{
-		when(userRepository.findById(5L)).thenReturn(Optional.empty());
+		when(userRepository.findById(5)).thenReturn(Optional.empty());
 
-		assertNull(userService.getUser(5L));
+		assertNull(userService.getUser(5));
 	}
 }
 

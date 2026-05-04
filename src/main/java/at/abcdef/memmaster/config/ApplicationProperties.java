@@ -16,7 +16,6 @@ public class ApplicationProperties {
     private final ApplicationProperties.Upload upload = new ApplicationProperties.Upload();
     private final ApplicationProperties.Security security = new ApplicationProperties.Security();
     private final ApplicationProperties.Oauth oauth = new ApplicationProperties.Oauth();
-    private final ApplicationProperties.Cache cache = new ApplicationProperties.Cache();
     private final ApplicationProperties.Translator translator = new ApplicationProperties.Translator();
 
     @Getter
@@ -60,13 +59,6 @@ public class ApplicationProperties {
         private String cardsDir = "cards-dir";
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class Cache {
-        private String timeToLiveSeconds = "time-to-live-seconds";
-        private String maxEntries = "max-entries";
-    }
 
     @Getter
     @Setter

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.5</version>
+		<version>4.0.6</version>
 		<relativePath/>
 	</parent>
 	<groupId>at.abcdef</groupId>
@@ -14,19 +14,14 @@
 	<name>memmaster-server</name>
 	<description>MemMaster server</description>
 	<properties>
-		<ehcache.version>3.11.1</ehcache.version>
-		<jackson-datatype.version>2.20.0</jackson-datatype.version>
 		<java.version>21</java.version>
 		<jjwt.version>0.13.0</jjwt.version>
-		<jsoup.version>1.20.1</jsoup.version>
-		<junit-jupiter.version>5.12.2</junit-jupiter.version>
+		<jsoup.version>1.22.2</jsoup.version>
 		<lombok-mapstruct.version>0.2.0</lombok-mapstruct.version>
-		<lombok.version>1.18.38</lombok.version>
+		<lombok.version>1.18.46</lombok.version>
 		<mapstruct.version>1.6.3</mapstruct.version>
-		<mariadb-java-client.version>3.5.0</mariadb-java-client.version>
+		<mariadb-java-client.version>3.5.8</mariadb-java-client.version>
 		<mariadb.version>1.21.3</mariadb.version>
-		<mockito-junit.version>5.17.0</mockito-junit.version>
-		<springboot.version>3.5.5</springboot.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -132,39 +127,13 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-hibernate5</artifactId>
-			<version>${jackson-datatype.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-joda</artifactId>
-			<version>${jackson-datatype.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>${jsoup.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>${mockito-junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
@@ -178,18 +147,12 @@
 			<version>${mariadb.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>${ehcache.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jcache</artifactId>
-			<version>${hibernate.version}</version>
+			<groupId>com.github.ben-manes.caffeine</groupId>
+			<artifactId>caffeine</artifactId>
 		</dependency>
 		<!-- XLS/XLSX parsing for dictionary bulk import -->
 		<dependency>
@@ -218,8 +181,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<release>${java.version}</release>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.mapstruct</groupId>
@@ -239,13 +201,12 @@
 						<path>
 							<groupId>org.springframework.boot</groupId>
 							<artifactId>spring-boot-configuration-processor</artifactId>
-							<version>${springboot.version}</version>
+							<version>${project.parent.version}</version>
 						</path>
 						<!-- For JPA static metamodel generation -->
 						<path>
-							<groupId>org.hibernate</groupId>
-							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>${hibernate.version}</version>
+							<groupId>org.hibernate.orm</groupId>
+							<artifactId>hibernate-processor</artifactId>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -273,10 +234,6 @@
 			<dependencies>
 				<dependency>
 					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-undertow</artifactId>
-				</dependency>
-				<dependency>
-					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-devtools</artifactId>
 					<optional>true</optional>
 				</dependency>
@@ -288,12 +245,7 @@
 		</profile>
 		<profile>
 			<id>prod</id>
-			<dependencies>
-				<dependency>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-undertow</artifactId>
-				</dependency>
-			</dependencies>
+			<dependencies/>
 			<build>
 				<plugins>
 					<plugin>

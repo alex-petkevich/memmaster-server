@@ -20,16 +20,17 @@ spring:
      database: MYSQL
      show-sql: false
      properties:
-       hibernate.id.new_generator_mappings: true
        hibernate.connection.provider_disables_autocommit: true
-       hibernate.cache.use_second_level_cache: true
-       hibernate.cache.use_query_cache: false
        hibernate.generate_statistics: false
        hibernate:
          jdbc:
            lob:
              non_contextual_creation: true
-         dialect: org.hibernate.dialect.MySQLDialect
+  cache:
+    type: caffeine
+    cache-names: roleByName,settingsEmailCache,settingsGlobalCache,loadAvatar
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=3600s
   mail:
     host: localhost
     protocol: smtp
@@ -65,9 +66,6 @@ application:
     cards-dir: cards
   cors:
     allowed-origins: '${APPLICATION_CORS_ALLOWED_ORIGINS:https://mem.homesite.by,http://mem.abcdef.at,https://mem.abcdef.at,http://localhost:4200}'
-  cache:
-    max-entries: 1000
-    time-to-live-seconds: 3600
   security:
     seed-key: 320bb523b651c669faaf027266d8bc33a98c46
   translator:

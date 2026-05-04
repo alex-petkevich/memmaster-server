@@ -41,7 +41,7 @@ public class SettingsController
 		this.settingsMapper = settingsMapper;
 	}
 
-	@GetMapping("/")
+   @GetMapping
   @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<List<SettingsDTO>> getUserSettings()
 	{
@@ -51,7 +51,7 @@ public class SettingsController
 		return ResponseEntity.ok(result);
 	}
 
-	@PostMapping("/")
+  @PostMapping
   @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<User> save(@Valid @RequestBody Map<String, String> userSettings)
 	{
@@ -61,7 +61,7 @@ public class SettingsController
 		return ResponseEntity.ok().build();
 	}
 
-  @GetMapping("/global/")
+  @GetMapping("/global")
   public ResponseEntity<List<SettingsDTO>> getGlobalSettings()
   {
     List<SettingsDTO> result = settingsService.getGlobalSettings().stream().map(settingsMapper::toEntity).toList();
@@ -69,7 +69,7 @@ public class SettingsController
     return ResponseEntity.ok(result);
   }
 
-  @PostMapping("/global/")
+  @PostMapping("/global")
   @PreAuthorize("hasAnyRole('ADMIN')")
   public ResponseEntity<User> saveGlobalSettings(@Valid @RequestBody Map<String, String> globalSettings)
   {

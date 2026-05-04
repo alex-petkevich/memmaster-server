@@ -36,7 +36,7 @@ public class FolderController
 		this.folderMapper = folderMapper;
 	}
 
-	@GetMapping("/")
+	@GetMapping
 	public ResponseEntity<List<FolderDTO>> getUserFolders(@RequestParam(required = false) String name,
 										@RequestParam(required = false)  String uuid,
 										@RequestParam(required = false)  String parent_id,
@@ -105,7 +105,7 @@ public class FolderController
 		return folders;
 	}
 
-	@PostMapping("/")
+	@PostMapping
 	public ResponseEntity<String> save(@Valid @RequestBody FolderDTO folder)
 	{
 		User user = userService.getCurrentUser();
@@ -149,7 +149,7 @@ public class FolderController
 		return ResponseEntity.ok(folderMapper.toEntity(folder));
 	}
 
-	@PostMapping("/activate/")
+	@PostMapping("/activate")
 	public ResponseEntity<?> activateUser(@RequestBody Long folderId) {
 
 		User user = userService.getCurrentUser();

@@ -18,12 +18,14 @@ public class TranslatorService {
 
   private final SettingsService settingsService;
   private final RestClient restClient;
+  private final ObjectMapper objectMapper;
 
   private final String URL_TEMPLATE = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=%s&lang=%s&text=%s";
 
-  public TranslatorService(SettingsService settingsService, @Qualifier("translatorRestClient") RestClient restClient) {
+  public TranslatorService(SettingsService settingsService, @Qualifier("translatorRestClient") RestClient restClient, ObjectMapper objectMapper) {
     this.settingsService = settingsService;
     this.restClient = restClient;
+    this.objectMapper = objectMapper;
   }
 
   public List<WordDTO> lookup(String text, String sourceLang, String targetLang) {
@@ -38,7 +40,7 @@ public class TranslatorService {
         .retrieve()
         .body(String.class);
 
-    final ObjectMapper mapper = new ObjectMapper();
+    final ObjectMapper mapper = objectMapper.copy();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     YDictionary dictionary;
     try {

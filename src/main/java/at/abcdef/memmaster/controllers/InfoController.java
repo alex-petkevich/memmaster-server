@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/info")
 public class InfoController {
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<StringBuilder> getApplicationInfo() {
 
         StringBuilder result = new StringBuilder();

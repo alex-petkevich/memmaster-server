@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SettingsRepository extends JpaRepository<Settings, Long>
+public interface SettingsRepository extends JpaRepository<Settings, Integer>
 {
     String SETTINGS_EMAIL_CACHE = "settingsEmailCache";
 

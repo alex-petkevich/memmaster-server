@@ -23,7 +23,7 @@ public class TranslatorController {
     this.translatorService = translatorService;
   }
 
-  @PostMapping("/")
+  @PostMapping
   public ResponseEntity<List<WordDTO>> lookup(@Valid @RequestBody WordDTO word)
   {
     List<WordDTO> result = translatorService.lookup(word.getText(), word.getLngSource(), word.getLngTarget());

@@ -10,7 +10,7 @@ import at.abcdef.memmaster.model.ERole;
 import at.abcdef.memmaster.model.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long>
+public interface RoleRepository extends JpaRepository<Role, Integer>
 {
 	String ROLE_BY_NAME_CACHE = "roleByName";
 
