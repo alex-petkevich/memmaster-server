@@ -60,7 +60,7 @@ application:
     from: support-memmaster@homesite.by
     baseUrl: 'https://mem.abcdef.at/'
   upload:
-    local-path: '/var/www/memmaster/data/'
+    local-path: '/mnt/vol1/www/memmaster/data/'
     upload-dir: uploads
     attach-dir: attachments
     cards-dir: cards
@@ -70,8 +70,8 @@ application:
     seed-key: 320bb523b651c669faaf027266d8bc33a98c46
   translator:
     ssl:
-      trust-store: ''
-      trust-store-password: ''
+      trust-store: '/etc/ssl/certs/java/cacerts'
+      trust-store-password: 'changeit'
       trust-store-type: JKS
   oauth:
     google-client-id: '${APPLICATION_OAUTH_GOOGLE_CLIENT_ID:}'
