@@ -26,6 +26,7 @@ public class ApplicationProperties {
         private String jwtSecret = "jwtSecret";
         private String jwtExpirationMs = "jwtExpirationMs";
         private String defaultLang = "default_lang";
+        private String contactEmail = "memmaster@abcdef.at";
         private String crawlerSchedulers = "crawler-schedulers";
     }
 

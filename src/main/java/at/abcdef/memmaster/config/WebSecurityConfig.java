@@ -62,6 +62,7 @@ public class WebSecurityConfig
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/api/management/**").hasRole("ADMIN")
 						.requestMatchers("/api/account/**").permitAll()
+						.requestMatchers("/api/contact/**").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
 						.requestMatchers("/api/info/**").permitAll()
 						.requestMatchers("/api/folders/**").permitAll()
