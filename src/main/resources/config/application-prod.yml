@@ -74,4 +74,4 @@ application:
       trust-store-password: 'changeit'
       trust-store-type: JKS
   oauth:
-    google-client-id: '${APPLICATION_OAUTH_GOOGLE_CLIENT_ID:}'
+    google-client-id: '${APPLICATION_OAUTH_GOOGLE_CLIENT_ID:306722608219-fposdgkgpsb423n4o6uj9gok9ao0l7ce.apps.googleusercontent.com}'
