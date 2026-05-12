@@ -34,6 +34,9 @@ public class DictionaryDTO {
 
   private Boolean is_archived;
 
+  @Size(max = 7)
+  private String color;
+
   private Instant created_at;
 
   private Instant last_modified_at;

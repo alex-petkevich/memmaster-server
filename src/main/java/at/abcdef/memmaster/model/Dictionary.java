@@ -43,6 +43,10 @@ public class Dictionary {
   @Column(name = "is_archived")
   private Boolean isArchived;
 
+  @Size(max = 7)
+  @Column(name = "color")
+  private String color;
+
   @Column(name = "created_at")
   private Instant createdAt;
 

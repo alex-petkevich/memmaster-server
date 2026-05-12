@@ -19,13 +19,14 @@ public class CsvDictionaryExportStrategy implements DictionaryExportStrategy {
   @Override
   public ExportFile export(String baseName, List<Dictionary> cards) {
     StringBuilder csv = new StringBuilder();
-    csv.append("name,value,name_file,value_file,is_remembered\n");
+    csv.append("name,value,name_file,value_file,is_remembered,color\n");
     for (Dictionary card : cards) {
       csv.append(csvCell(card.getName())).append(',')
         .append(csvCell(card.getValue())).append(',')
         .append(csvCell(card.getNameImg())).append(',')
         .append(csvCell(card.getValueImg())).append(',')
-        .append(card.getIsRemembered() != null && card.getIsRemembered())
+        .append(card.getIsRemembered() != null && card.getIsRemembered()).append(',')
+        .append(csvCell(card.getColor()))
         .append('\n');
     }
 

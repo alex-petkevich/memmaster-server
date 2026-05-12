@@ -1,0 +1,2 @@
+ALTER TABLE dictionary ADD COLUMN color VARCHAR(7);
+

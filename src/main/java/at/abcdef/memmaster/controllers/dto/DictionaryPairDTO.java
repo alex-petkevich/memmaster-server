@@ -35,6 +35,9 @@ public class DictionaryPairDTO {
 
   private Boolean is_archived;
 
+  @Size(max = 7)
+  private String color;
+
   public enum PairType {
     TEXT,
     FILE

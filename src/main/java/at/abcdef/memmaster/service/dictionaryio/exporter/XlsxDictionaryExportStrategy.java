@@ -31,6 +31,7 @@ public class XlsxDictionaryExportStrategy implements DictionaryExportStrategy {
       header.createCell(2).setCellValue("name_file");
       header.createCell(3).setCellValue("value_file");
       header.createCell(4).setCellValue("is_remembered");
+      header.createCell(5).setCellValue("color");
 
       int rowIndex = 1;
       for (Dictionary card : cards) {
@@ -40,9 +41,10 @@ public class XlsxDictionaryExportStrategy implements DictionaryExportStrategy {
         row.createCell(2).setCellValue(safeValue(card.getNameImg()));
         row.createCell(3).setCellValue(safeValue(card.getValueImg()));
         row.createCell(4).setCellValue(Boolean.toString(card.getIsRemembered() != null && card.getIsRemembered()));
+        row.createCell(5).setCellValue(safeValue(card.getColor()));
       }
 
-      for (int i = 0; i <= 4; i++) {
+      for (int i = 0; i <= 5; i++) {
         sheet.autoSizeColumn(i);
       }
 
