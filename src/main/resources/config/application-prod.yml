@@ -33,6 +33,7 @@ spring:
       spec: maximumSize=1000,expireAfterWrite=3600s
   mail:
     host: localhost
+    port: '25'
     protocol: smtp
   thymeleaf:
     cache: true
@@ -57,7 +58,7 @@ application:
     baseUrl: 'https://mem.abcdef.at/'
     crawler-schedulers: true
   mail:
-    from: support-memmaster@homesite.by
+    from: support-memmaster@abcdef.at
     baseUrl: 'https://mem.abcdef.at/'
   upload:
     local-path: '/mnt/vol1/www/memmaster/data/'
