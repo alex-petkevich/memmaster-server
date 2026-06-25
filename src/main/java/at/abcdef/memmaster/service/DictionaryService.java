@@ -103,6 +103,50 @@ public class DictionaryService {
     return bulkImportDictionary(targetFolder, sourcePairs);
   }
 
+  public List<Dictionary> copySelectedToFolder(Folder sourceFolder, Folder targetFolder, List<Long> pairIds) {
+    List<Dictionary> sourcePairs = getDictionaryInFolder(sourceFolder).stream()
+        .filter(d -> pairIds.contains(d.getId()))
+        .toList();
+    if (sourcePairs.isEmpty()) {
+      return List.of();
+    }
+    return bulkImportDictionary(targetFolder, sourcePairs);
+  }
+
+  public List<Dictionary> moveSelectedToFolder(Folder sourceFolder, Folder targetFolder, List<Long> pairIds) {
+    List<Dictionary> sourcePairs = getDictionaryInFolder(sourceFolder).stream()
+        .filter(d -> pairIds.contains(d.getId()))
+        .toList();
+    if (sourcePairs.isEmpty()) {
+      return List.of();
+    }
+    List<Dictionary> copied = bulkImportDictionary(targetFolder, sourcePairs);
+    // Remove selected pairs from source folder
+    for (Dictionary d : sourcePairs) {
+      d.getFolders().remove(sourceFolder);
+      if (d.getFolders().isEmpty()) {
+        dictionaryRepository.delete(d);
+      } else {
+        dictionaryRepository.save(d);
+      }
+    }
+    return copied;
+  }
+
+  public void deleteSelected(Folder folder, List<Long> pairIds) {
+    List<Dictionary> pairs = getDictionaryInFolder(folder).stream()
+        .filter(d -> pairIds.contains(d.getId()))
+        .toList();
+    for (Dictionary d : pairs) {
+      d.getFolders().remove(folder);
+      if (d.getFolders().isEmpty()) {
+        dictionaryRepository.delete(d);
+      } else {
+        dictionaryRepository.save(d);
+      }
+    }
+  }
+
   public Dictionary markAsRemembered(Long pairId) {
     Dictionary dict = dictionaryRepository.findById(pairId)
         .orElseThrow(() -> new IllegalArgumentException("Dictionary entry not found: " + pairId));

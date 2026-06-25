@@ -149,6 +149,60 @@ public class DictionaryController {
     return ResponseEntity.ok(dictionaryMapper.toPairDTO(copied));
   }
 
+  @PostMapping("/{sourceFolderId}/copy-selected-to/{targetFolderId}")
+  public ResponseEntity<?> copySelectedToFolder(@Valid @PathVariable Long sourceFolderId,
+                                                @Valid @PathVariable Long targetFolderId,
+                                                @RequestBody List<Long> pairIds) {
+    User user = userService.getCurrentUser();
+
+    Folder sourceFolder = foldersService.getUserOrPublicFolder(user.getId(), sourceFolderId);
+    if (sourceFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to read this folder.");
+    }
+
+    Folder targetFolder = foldersService.getUserFolder(user.getId(), targetFolderId);
+    if (targetFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to write to this folder.");
+    }
+
+    List<Dictionary> copied = dictionaryService.copySelectedToFolder(sourceFolder, targetFolder, pairIds);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(copied));
+  }
+
+  @PostMapping("/{sourceFolderId}/move-selected-to/{targetFolderId}")
+  public ResponseEntity<?> moveSelectedToFolder(@Valid @PathVariable Long sourceFolderId,
+                                                @Valid @PathVariable Long targetFolderId,
+                                                @RequestBody List<Long> pairIds) {
+    User user = userService.getCurrentUser();
+
+    Folder sourceFolder = foldersService.getUserFolder(user.getId(), sourceFolderId);
+    if (sourceFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
+    }
+
+    Folder targetFolder = foldersService.getUserFolder(user.getId(), targetFolderId);
+    if (targetFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to write to this folder.");
+    }
+
+    List<Dictionary> moved = dictionaryService.moveSelectedToFolder(sourceFolder, targetFolder, pairIds);
+    return ResponseEntity.ok(dictionaryMapper.toPairDTO(moved));
+  }
+
+  @PostMapping("/{folderId}/delete-selected")
+  public ResponseEntity<?> deleteSelected(@Valid @PathVariable Long folderId,
+                                          @RequestBody List<Long> pairIds) {
+    User user = userService.getCurrentUser();
+
+    Folder existingFolder = foldersService.getUserFolder(user.getId(), folderId);
+    if (existingFolder == null) {
+      return ResponseEntity.status(403).body("You do not have permission to edit this folder.");
+    }
+
+    dictionaryService.deleteSelected(existingFolder, pairIds);
+    return ResponseEntity.ok().build();
+  }
+
   @GetMapping("/{folderId}/export")
   public ResponseEntity<?> export(@Valid @PathVariable Long folderId, @RequestParam(defaultValue = "csv") String format) {
     User user = userService.getCurrentUser();
